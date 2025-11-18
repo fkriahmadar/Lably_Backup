@@ -11,23 +11,23 @@ const path = require("path");
 // Untuk membaca data POST dari form
 app.use(express.urlencoded({ extended: true }));
 
-// Session untuk autentikasi
+// Session
 app.use(session({
     secret: "lably-secret-key",
     resave: false,
     saveUninitialized: true
 }));
 
-// Public folder untuk CSS & Asset
+// Public folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// Set view engine EJS
+// Set EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 
 // ==========================
-// 2. ROUTE HALAMAN (GET)
+// 2. PAGE HOME
 // ==========================
 
 app.get("/", async (req, res) => {
@@ -37,77 +37,27 @@ app.get("/", async (req, res) => {
     );
 
     res.render("layouts/main", {
-        title: "Home | Lably Official Web",
+        title: "Home | Lably",
         showFooter: true,
         meta: `
-            <meta name="description" content="LabLy: Solusi terdepan untuk pengadaan alat riset dan laboratorium." />
+            <meta name="description" content="LabLy: Solusi alat riset & laboratorium." />
         `,
-        style: `
-            <link rel="stylesheet" href="/CSS/home.css" />
-        `,
+        style: `<link rel="stylesheet" href="/CSS/home.css" />`,
         content,
     });
 });
 
-// GET Login Page
-app.get("/login", async (req, res) => {
-    const content = await ejs.renderFile(
-        path.join(__dirname, "views/pages/login.ejs"),
-        {}
-    );
-
-    res.render("layouts/auth", {
-        title: "Login | LabLy",
-        meta: "",
-        style: "",
-        content
-    });
-});
-
-// GET Register Page
-app.get("/register", async (req, res) => {
-    const content = await ejs.renderFile(
-        path.join(__dirname, "views/pages/register.ejs"),
-        {}
-    );
-
-    res.render("layouts/auth", {
-        title: "Register | LabLy",
-        meta: "",
-        style: "",
-        content
-    });
-});
-
-app.get("/form", async (req, res) => {
-    const content = await ejs.renderFile(
-        path.join(__dirname, "views/pages/form.ejs"),
-        {}
-    );
-
-    res.render("layouts/forms", {
-        title: "Form | LabLy",
-        meta: "",
-        style: "",
-        content
-    });
-});
-
 
 // ==========================
-// 3. ROUTE AUTENTIKASI (POST)
+// 3. ROUTES AUTENTIKASI (LOGIN, REGISTER)
 // ==========================
 
-// Import routes utama (index.js)
 const routes = require("./routes/index");
-
-// Gunakan semua route di index.js
-// contoh: POST /register, POST /login
 app.use("/", routes);
 
 
 // ==========================
-// 4. Jalankan server
+// 4. Jalankan Server
 // ==========================
 
 app.listen(3000, () => {

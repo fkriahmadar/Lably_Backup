@@ -5,6 +5,11 @@
     </div>
 
     <div class="auth-right">
+        <% if (message) { %>
+        <div class="popup <%= message.type %>">
+            <p><%= message.text %></p>
+        </div>
+        <% } %>
         <h2>Sign In</h2>
 
     <form action="/login" method="POST" class="auth-form">
@@ -34,3 +39,11 @@
     </form>
     </div>
 </div>
+
+<script>
+    setTimeout(() => {
+        const popup = document.querySelector(".popup");
+        if (popup) popup.remove();
+    }, 3000);
+</script>
+
