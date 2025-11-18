@@ -1,0 +1,36 @@
+<div class="auth-container">
+    <div class="auth-left">
+        <h1>Sign In Your Account</h1>
+        <p>Masuk ke Akun Peminjaman Anda</p>
+    </div>
+
+    <div class="auth-right">
+        <h2>Sign In</h2>
+
+    <form action="/login" method="POST" class="auth-form">
+        <div class="input-group">
+        <input type="email" name="email" placeholder="Email Address" required />
+    </div>
+
+    <div class="input-group">
+        <input type="password" name="password" placeholder="Password" required />
+    </div>
+
+    <button type="submit" class="btn-auth">Sign In</button>
+
+    <div class="auth-separator">
+        <span>or</span>
+    </div>
+
+    <button type="button" class="btn-google">
+        <img src="/Assets/google.png" alt="Google" />
+        Sign in with Google
+    </button>
+
+    <p class="text-small">
+        Don’t have an account?
+        <a href="register">Sign Up</a>
+    </p>
+    </form>
+    </div>
+</div>

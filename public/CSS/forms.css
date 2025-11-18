@@ -1,0 +1,131 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: poppins, sans-serif;
+}
+
+.container{
+    display: grid;
+    height: 100vh;
+    grid-template-areas: "left right";
+    grid-template-columns: 2fr 5.5fr;
+}
+
+.left{
+    grid-area: left;
+    background: linear-gradient(135deg, #56a4ff, #b2f2bb);
+    background-size: cover;
+    padding: 30px 15px 0 40px;
+    border-radius: 0 20px 20px 0;
+}
+
+.left .left-back{
+    display: flex;
+    text-align: center;
+    color: #000000;
+    gap: 20px;
+}
+
+.left .left-back a{
+    text-decoration: none;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.left .left-detail div{
+    height: 83vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.left-detail-main-text{
+    color:#0b4487;
+    font-size: 34px;
+    font-weight: 600;
+}
+
+.left-detail-text{
+    color: #000000;
+    font-size: 16px;
+    margin-top: 15px;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.right{
+    grid-area: right;
+    background-color: #ffffff;
+    padding: 25px 60px 0 40px;
+}
+
+.logo{
+    display: flex;
+    justify-content: right;
+    color: #3f96ff;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.logo span{
+    color: #0b4487;
+}
+
+.form-section{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #0b4487;
+}
+
+.form-section h3{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 30px 0 0 0;
+}
+
+.form-section .grid{
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-section .grid input{
+    width: 49%;
+    padding: 12px 15px;
+    border: 2px solid #0b4487;
+    border-radius: 8px;
+    font-size: 15px;
+    box-shadow: 0 2px 5px rgb(211, 211, 211);
+}
+
+.form-section .grid-2 input{
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #0b4487;
+    border-radius: 8px;
+    font-size: 15px;
+    box-shadow: 0 2px 5px rgb(211, 211, 211);
+}
+
+.btn-next {
+    margin-top: 40px;
+    float: right;
+    padding: 10px 15px;
+    background: linear-gradient(to right, #F37A1D, #F1930B);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 15px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgb(211, 211, 211);
+}
+
+.btn-next span {
+    font-size: 16px;
+}
