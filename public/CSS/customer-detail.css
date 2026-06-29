@@ -1,0 +1,392 @@
+/* ================================
+   GLOBAL RESET (AMAN)
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ================================
+   LAYOUT GRID (SIDEBAR + CONTENT)
+================================ */
+.container {
+  display: grid;
+  height: 100vh;
+  grid-template-areas: "left right";
+  grid-template-columns: 1fr 4fr;
+  background: #f8f9ff;
+}
+
+/* ================================
+   DASHBOARD CONTENT WRAPPER
+================================ */
+.right {
+  grid-area: right;
+  padding: 35px;
+  overflow-y: auto;
+}
+
+/* ================================
+   PROFILE CONTENT WRAPPER
+================================ */
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+/* ================================
+   PROFILE HEADER
+================================ */
+.profile-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a3a6b;
+}
+
+.profile-header p {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 0.2rem;
+}
+
+/* ================================
+   PROFILE BODY (2 KOLOM)
+================================ */
+.profile-body {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ================================
+   PROFILE CARD (BASE)
+================================ */
+.profile-card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.8rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card-title h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a3a6b;
+}
+
+.card-title p {
+  font-size: 0.82rem;
+  color: #aaa;
+  margin-top: 0.2rem;
+  margin-bottom: 1.4rem;
+}
+
+/* ================================
+   INFORMASI PRIBADI (FORM)
+================================ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 0.65rem 1rem;
+  border: 1.5px solid #dde3f0;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: #333;
+  outline: none;
+  background: #f8f9ff;
+  cursor: default;
+}
+
+/* ================================
+   PROFILE SIDE (KANAN)
+================================ */
+.profile-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ================================
+   AVATAR CARD
+================================ */
+.avatar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #e8f0ff, #f0f8ff);
+}
+
+.avatar-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a3a6b;
+}
+
+.avatar-card p {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ================================
+   SECURITY / STATUS CARD
+================================ */
+.security-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.security-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.security-list li:last-child {
+  border-bottom: none;
+}
+
+.security-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.security-item i {
+  font-size: 1.2rem;
+  color: #1a3a6b;
+}
+
+.security-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.security-desc {
+  display: block;
+  font-size: 0.78rem;
+  color: #aaa;
+}
+
+/* ================================
+   BANTUAN / VERIFIKASI CARD
+================================ */
+.help-card {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.help-icon {
+  font-size: 1.6rem;
+  color: #fff;
+  background: #1a3a6b;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.help-text {
+  flex: 1;
+}
+
+.help-text h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a3a6b;
+  margin-bottom: 0.2rem;
+}
+
+.help-text p {
+  font-size: 0.82rem;
+  color: #888;
+}
+
+/* ================================
+   VERIFIKASI STATUS
+================================ */
+.help-card.verified {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+}
+
+.help-card.verified .help-icon {
+  background: #16a34a;
+}
+
+.help-card.pending {
+  background: #fffbeb;
+  border: 1.5px solid #fcd34d;
+}
+
+.help-card.pending .help-icon {
+  background: #d97706;
+}
+
+.help-card.rejected {
+  background: #fff7ed;
+  border: 1.5px solid #fdba74;
+}
+
+.help-card.rejected .help-icon {
+  background: #ea580c;
+}
+
+/* ================================
+   BTN BACK
+================================ */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a3a6b;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  transition: all 0.5s ease;
+}
+
+.btn-back .bi {
+  font-size: 1rem;
+  transition: all 0.5s ease;
+}
+
+.btn-back:hover,
+.btn-back:hover .bi {
+  color: var(--btn-hover-blue);
+}
+
+/* ================================
+   KTP PREVIEW
+================================ */
+.ktp-preview-img {
+  width: 100%;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.ktp-label {
+  font-size: 0.82rem;
+  color: #888;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.ktp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: #aaa;
+}
+
+.ktp-empty i {
+  font-size: 2.5rem;
+}
+
+/* ================================
+   KTP STATUS BADGE
+================================ */
+.ktp-status-info {
+  padding: 0.5rem 0;
+}
+
+.ktp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ktp-badge.verified {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+.ktp-badge.pending {
+  background: #fffbeb;
+  color: #d97706;
+}
+.ktp-badge.rejected {
+  background: #fff7ed;
+  color: #ea580c;
+}
+.ktp-badge.unverified {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+/* ================================
+   APPROVAL ACTIONS
+================================ */
+.approval-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-shrink: 0;
+}
+
+.btn-approve {
+  padding: 0.6rem 1.2rem;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.3s ease;
+}
+
+.btn-approve:hover {
+  background: #15803d;
+}
+
+.btn-reject {
+  padding: 0.6rem 1.2rem;
+  background: transparent;
+  color: #ea580c;
+  border: 2px solid #ea580c;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.btn-reject:hover {
+  background: #ea580c;
+  color: #fff;
+}

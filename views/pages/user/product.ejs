@@ -1,0 +1,67 @@
+<div class="container product-detail" data-stock="<%= product.stock %>">
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="popup <%= message.type %>" id="product-popup" style="position:fixed; top:6rem; right:1rem; z-index:2000; padding:12px 18px; border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,0.12);">
+      <%= message.text %>
+    </div>
+    <script>setTimeout(()=>{const p=document.getElementById('product-popup'); if(p) p.remove()}, 3500);</script>
+  <% } %>
+
+  <div class="item-img-wrap">
+    <img src="/uploads/<%= product.image %>" alt="<%= product.name %>" />
+  </div>
+
+  <div class="item-content-wrap">
+    <p class="category"><%= product.category_name %></p>
+    <h1><%= product.name %></h1>
+
+    <div class="price">
+      <h2>Rp<%= product.price.toLocaleString() %></h2>
+      <h2>/ Hari</h2>
+    </div>
+
+    <div class="stock">
+      <h3>Stock :</h3>
+      <h3><%= product.stock %></h3>
+    </div>
+
+    <p><%= product.description %></p>
+
+    <div class="action-group">
+      <div class="quantity-input">
+        <button
+          type="button"
+          class="qty-btn minus-btn"
+          aria-label="Decrease quantity"
+        >
+          -
+        </button>
+        <input type="number" class="qty-display" value="1" min="1" readonly />
+        <button
+          type="button"
+          class="qty-btn plus-btn"
+          aria-label="Increase quantity"
+        >
+          +
+        </button>
+      </div>
+
+      <form id="cart-form" action="/form" method="get" style="display: inline">
+        <input type="hidden" name="product_id" value="<%= product.id %>" />
+        <input type="hidden" name="action" value="cart" />
+        <input type="hidden" name="qty" id="cart-qty-input" />
+        <button type="submit" class="btn btn-primary add-to-cart">
+          Add to Cart
+        </button>
+      </form>
+
+      <form id="loan-form" action="/form" method="get" style="display: inline">
+        <input type="hidden" name="product_id" value="<%= product.id %>" />
+        <input type="hidden" name="action" value="loan" />
+        <input type="hidden" name="qty" id="loan-qty-input" />
+        <button type="submit" class="btn btn-secondary loan-now">
+          Loan Now
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

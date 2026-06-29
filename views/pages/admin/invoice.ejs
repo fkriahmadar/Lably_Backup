@@ -1,0 +1,218 @@
+<nav class="navbar screen-only">
+  <span>Invoice</span>
+  <img src="Assets/profile.jpg" alt="" />
+</nav>
+
+<section class="controls-section screen-only">
+  <div class="total-checkout">
+    <i class="bi bi-cart-check"></i>
+    <h2><%= orders.length %> ORDERS</h2>
+  </div>
+  <a href="#" class="print-button" onclick="window.print(); return false;">
+    <i class="bi bi-printer"></i>
+    Print PDF
+  </a>
+</section>
+
+<!-- JSON DATA UNTUK SCRIPT -->
+<script id="orders-data-json" type="application/json">
+  <%- JSON.stringify(orders) %>
+</script>
+
+<!-- ======================= SCREEN TABLE (PAGINATION) ======================= -->
+<div class="table-wrapper screen-only">
+  <table>
+    <thead>
+      <tr>
+        <th class="col-no">No</th>
+        <th class="col-name">Customer</th>
+        <th>Equipment</th>
+        <th>Loan Period</th>
+        <th>Status</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+
+    <tbody id="invoiceTableBody">
+      <!-- Row akan dibuat lewat JS -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="pagination screen-only" id="paginationInvoice"></div>
+
+
+<!-- ======================= PRINT-ONLY INVOICE (TETAP FULL) ======================= -->
+<div class="print-only invoice-page">
+
+  <!-- HEADER -->
+  <div class="invoice-header">
+    <div class="brand-block">
+      <div class="brand-logo">Lab<span>Ly</span></div>
+      <div class="brand-subtitle">Peminjaman Alat Laboratorium</div>
+    </div>
+
+    <div class="invoice-info">
+      <h2 class="invoice-title">INVOICE</h2>
+
+      <div class="invoice-meta">
+        <div class="meta-row"><span class="meta-label">Alamat:</span><span class="meta-value">Green Office Park 9, BSD City</span></div>
+        <div class="meta-row"><span class="meta-label">Kontak:</span><span class="meta-value">021-3456-887</span></div>
+        <div class="meta-row"><span class="meta-label">Email:</span><span class="meta-value">info@lably.com</span></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- PRINT TABLE (FULL) -->
+  <table class="invoice-table">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Customer</th>
+        <th>Equipment</th>
+        <th>Loan Period</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% orders.forEach((o, i) => { %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= o.customer_name %></td>
+          <td><%= o.product_name %></td>
+          <td><%= o.tgl_pinjam %> - <%= o.tgl_kembali %></td>
+          <td>Rp <%= Number(o.price).toLocaleString("id-ID") %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <!-- TOTAL -->
+  <div class="bottom-section">
+    <div class="admin-contact">
+      <h3>Diterbitkan Oleh</h3>
+      <p>info@lably.com</p>
+    </div>
+
+    <div class="total-box">
+      <div class="total-row">
+        <span class="total-label">TOTAL</span>
+        <span class="total-value">
+          Rp <%= Number(orders.reduce((sum, o) => sum + Number(o.price), 0)).toLocaleString("id-ID") %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-section">
+    <h4>Catatan</h4>
+    <p>"Semangat! Teruslah berkarya dan berkontribusi untuk dunia riset."</p>
+  </div>
+
+</div>
+
+<script>
+  const tableBody = document.getElementById("invoiceTableBody");
+  const pagination = document.getElementById("paginationInvoice");
+
+  const ordersJson = document.getElementById("orders-data-json").textContent;
+  const ordersData = JSON.parse(ordersJson);
+
+  const ROWS_PER_PAGE = 3;
+  let currentPage = 1;
+
+  function createInvoiceRow(o, index) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${index}</td>
+      <td>${o.customer_name}</td>
+      <td>${o.product_name}</td>
+      <td>${o.tgl_pinjam} - ${o.tgl_kembali}</td>
+      <td class="complete">Completed</td>
+      <td>Rp ${Number(o.price).toLocaleString("id-ID")}</td>
+    `;
+    return tr;
+  }
+
+  function renderTable() {
+    const totalPages = Math.ceil(ordersData.length / ROWS_PER_PAGE);
+    if (currentPage > totalPages) currentPage = 1;
+
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    const sliced = ordersData.slice(start, start + ROWS_PER_PAGE);
+
+    tableBody.innerHTML = "";
+
+    if (ordersData.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center; padding:15px;">No completed orders</td>
+        </tr>`;
+    } else {
+      sliced.forEach((o, i) => {
+        tableBody.appendChild(createInvoiceRow(o, start + i + 1));
+      });
+    }
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    pagination.innerHTML = "";
+    if (totalPages <= 1) return;
+
+    const maxNumbers = 2;
+    let startPage = currentPage;
+    let endPage = Math.min(totalPages, currentPage + maxNumbers - 1);
+
+    if (totalPages <= maxNumbers) {
+      startPage = 1;
+      endPage = totalPages;
+    }
+
+    if (currentPage > totalPages - (maxNumbers - 1)) {
+      startPage = Math.max(1, totalPages - (maxNumbers - 1));
+      endPage = totalPages;
+    }
+
+    if (currentPage > 1) {
+      const prev = document.createElement("button");
+      prev.className = "page-prev";
+      prev.innerHTML = `<i class="bi bi-chevron-left"></i> PREV`;
+      prev.onclick = () => {
+        currentPage--;
+        renderTable();
+      };
+      pagination.appendChild(prev);
+    }
+
+    for (let page = startPage; page <= endPage; page++) {
+      const btn = document.createElement("button");
+      btn.className = "page-number";
+      if (page === currentPage) btn.classList.add("active");
+      btn.textContent = page;
+      btn.onclick = () => {
+        currentPage = page;
+        renderTable();
+      };
+      pagination.appendChild(btn);
+    }
+
+    if (currentPage < totalPages) {
+      const next = document.createElement("button");
+      next.className = "page-next";
+      next.innerHTML = `NEXT <i class="bi bi-chevron-right"></i>`;
+      next.onclick = () => {
+        currentPage++;
+        renderTable();
+      };
+      pagination.appendChild(next);
+    }
+  }
+
+  renderTable();
+</script>

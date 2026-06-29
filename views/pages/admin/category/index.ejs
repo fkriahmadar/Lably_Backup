@@ -1,0 +1,211 @@
+<div class="category-container">
+  <% if (message) { %>
+  <div class="popup <%= message.type %>"><%= message.text %></div>
+
+  <script>
+    setTimeout(() => {
+      document.querySelector(".popup").style.display = "none";
+    }, 2600);
+  </script>
+  <% } %>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <span>Category</span>
+    <img src="/Assets/profile.jpg" alt="" />
+  </nav>
+
+  <!-- CONTROLS -->
+  <section class="controls-section">
+    <div class="search-bar">
+      <i class="bi bi-search"></i>
+      <input type="text" id="searchInput" placeholder="Search category..." />
+      <button class="search-button" id="searchBtn">
+        <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+
+    <a href="/category/create" class="add-category-button">
+      <i class="bi bi-plus-circle"></i>
+      Add Category
+    </a>
+  </section>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table class="category-table" id="categoryTable">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="tableBody">
+        <% categories.forEach((c, i) => { %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= c.name %></td>
+          <td>
+            <a href="/category/edit/<%= c.id %>" class="btn-edit">Update</a>
+
+            <button
+              class="btn-delete"
+              onclick="openDeletePopup('/category/delete/<%= c.id %>', '<%= c.name %>')"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="pagination" class="pagination"></div>
+
+<!-- DELETE POPUP -->
+<div id="delete-popup" class="delete-popup-overlay" style="display: none">
+  <div class="delete-popup-box">
+    <h3>Are you sure?</h3>
+    <p>
+      Do you really want to delete
+      <strong id="delete-item-name"></strong> category?
+    </p>
+
+    <div class="delete-popup-actions">
+      <a id="confirm-delete-btn" href="#" class="popup-yes">Yes</a>
+      <button class="popup-no" onclick="closeDeletePopup()">No</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openDeletePopup(url, name) {
+    const popup = document.getElementById("delete-popup");
+    document.getElementById("confirm-delete-btn").href = url;
+    document.getElementById("delete-item-name").textContent = name;
+    popup.style.display = "flex";
+  }
+
+  function closeDeletePopup() {
+    document.getElementById("delete-popup").style.display = "none";
+  }
+</script>
+
+<!-- SEARCH + PAGINATION SCRIPT (masih sama) -->
+<script>
+  const ROWS_PER_PAGE = 5;
+  let currentPage = 1;
+
+  const tableBody = document.getElementById("tableBody");
+  const searchInput = document.getElementById("searchInput");
+  const pagination = document.getElementById("pagination");
+
+  let rows = Array.from(tableBody.querySelectorAll("tr"));
+
+  function renderTable() {
+    const q = searchInput.value.toLowerCase();
+
+    const filtered = rows.filter((r) =>
+      r.children[1].textContent.toLowerCase().includes(q)
+    );
+
+    const totalPages = Math.ceil(filtered.length / ROWS_PER_PAGE);
+    if (currentPage > totalPages) currentPage = 1;
+
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    const pageRows = filtered.slice(start, start + ROWS_PER_PAGE);
+
+    tableBody.innerHTML = "";
+    pageRows.forEach((r, i) => {
+      r.children[0].textContent = start + i + 1;
+      tableBody.appendChild(r);
+    });
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    pagination.innerHTML = "";
+
+    if (totalPages <= 1) return;
+
+    // Batas maksimum halaman angka yang ditampilkan
+    const maxNumbers = 2;
+
+    // Tentukan halaman awal dan akhir yang akan ditampilkan.
+    let startPage = currentPage;
+    let endPage = Math.min(totalPages, currentPage + maxNumbers - 1);
+
+    // Jika total halaman kurang dari 2, set endPage ke totalPages
+    if (totalPages <= maxNumbers) {
+      startPage = 1;
+      endPage = totalPages;
+    }
+
+    // Jika kita sudah di halaman terakhir atau sebelumnya, kita perlu memastikan
+    // kita menampilkan 2 angka terakhir jika memungkinkan.
+    if (currentPage > totalPages - (maxNumbers - 1)) {
+      startPage = Math.max(1, totalPages - (maxNumbers - 1));
+      endPage = totalPages;
+    }
+
+    // ----------------------------------------------------
+    // 1. Tombol PREV
+    // ----------------------------------------------------
+    if (currentPage > 1) {
+      const prev = document.createElement("button");
+      prev.className = "page-prev";
+      prev.innerHTML = `<i class="bi bi-chevron-left"></i> PREV`;
+      prev.onclick = () => {
+        currentPage--;
+        renderTable();
+      };
+      pagination.appendChild(prev);
+    }
+
+    // ----------------------------------------------------
+    // 2. Tampilkan Angka Halaman
+    // ----------------------------------------------------
+    for (let page = startPage; page <= endPage; page++) {
+      const btn = document.createElement("button");
+      btn.className = "page-number";
+      if (page === currentPage) btn.classList.add("active");
+      btn.textContent = page;
+      btn.onclick = () => {
+        currentPage = page;
+        renderTable();
+      };
+      pagination.appendChild(btn);
+    }
+
+    // ----------------------------------------------------
+    // 3. Tombol NEXT
+    // ----------------------------------------------------
+    if (currentPage < totalPages) {
+      const next = document.createElement("button");
+      next.className = "page-next";
+      next.innerHTML = `NEXT <i class="bi bi-chevron-right"></i>`;
+      next.onclick = () => {
+        currentPage++;
+        renderTable();
+      };
+      pagination.appendChild(next);
+    }
+  }
+
+  searchInput.addEventListener("keyup", () => {
+    currentPage = 1;
+    renderTable();
+  });
+
+  document.getElementById("searchBtn").onclick = () => {
+    currentPage = 1;
+    renderTable();
+  };
+
+  renderTable();
+</script>

@@ -1,0 +1,150 @@
+:root {
+  --primary: #0b4487;
+  --secondary: #f37a1d;
+  --base-white: #f8f9ff;
+  --base-black: #333;
+
+  --background-gradient: linear-gradient(to bottom, #a8e4fe 0%, #ffffff 65%);
+  --button-gradient: linear-gradient(to right, #f37a1d, #f1930b);
+
+  --background-product: #f6f5fd;
+  --background-cancel: #ae0707;
+
+  --btn-hover-blue: #3f96ff;
+  --btn-hover-orange: #f06c06;
+}
+
+/* ================================
+   SIDEBAR 
+================================ */
+.left {
+  grid-area: left;
+  background-color: var(--primary);
+  padding: 3.5rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--background-product);
+  display: flex;
+  justify-content: center;
+}
+
+.logo span {
+  color: var(--background-product);
+}
+
+.left-menu {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-left: 40px;
+}
+
+.menu a,
+.logout a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.menu a i {
+  color: var(--base-white);
+  font-size: 20px;
+  transition: color 0.5s ease-out;
+}
+
+.menu a span {
+  margin-left: 15px;
+  font-size: 15px;
+  color: var(--base-white);
+  font-weight: 500;
+  transition: color 0.3s ease-out;
+}
+
+.menu:hover a i,
+.menu:hover a span {
+  color: var(--btn-hover-blue);
+}
+
+.menu.active {
+  background-color: var(--btn-hover-blue);
+  border-radius: 1rem 0 0 1rem;
+  padding: 0.7rem 1rem;
+  margin-left: -10px;
+  transition: background-color 0.3s ease;
+}
+
+.menu.active a i,
+.menu.active a span {
+  color: var(--base-white);
+  font-weight: 600;
+}
+
+.logout {
+  margin-top: auto;
+  margin-left: 40px;
+}
+
+.logout a i {
+  color: var(--base-white);
+  font-size: 25px;
+  transition: color 0.3s ease;
+}
+
+.logout a span {
+  margin-left: 15px;
+  font-size: 20px;
+  color: var(--base-white);
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.logout:hover a i,
+.logout:hover a span {
+  color: var(--btn-hover-blue);
+}
+
+/* Popup style */
+.popup {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  padding: 15px 22px;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  z-index: 9999;
+  animation: fadeIn 0.4s ease forwards, fadeOut 0.5s ease 2.5s forwards;
+}
+.popup.success {
+  background-color: #28a745;
+}
+.popup.error {
+  background-color: #dc3545;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}

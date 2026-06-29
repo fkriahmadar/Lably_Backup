@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title><%= title || "Lably" %></title>
+
+    <!-- Meta Tags -->
+    <% if (typeof meta !== "undefined") { %> <%- meta %> <% } %>
+
+    <link rel="icon" type="image/png" href="/assets/logo.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Sansation:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" href="/css/sidebar.css" />
+
+    <!-- Page-specific CSS -->
+    <% if (typeof style !== "undefined" && style) { %> <%- style %> <% } %>
+  </head>
+
+  <body>
+    <!-- === POPUP NOTIFICATION (SAFE MODE) === -->
+    <% const allowPopup = typeof showPopup !== "undefined" ? showPopup : true;
+    const popupMessage = typeof message !== "undefined" ? message : null; %> <%
+    if (allowPopup && popupMessage) { %>
+    <div class="popup <%= popupMessage.type %>"><%= popupMessage.text %></div>
+    <% } %>
+
+    <!-- Sidebar + Content -->
+    <div class="container">
+      <div class="left"><%- include('../partials/sidebar') %></div>
+
+      <div class="right"><%- content %></div>
+    </div>
+
+    <!-- JS Tambahan -->
+    <script src="/JS/admin/order-script.js"></script>
+    <script src="/JS/admin/admin.js"></script>
+  </body>
+</html>

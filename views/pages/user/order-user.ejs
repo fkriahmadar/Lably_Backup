@@ -1,0 +1,88 @@
+<div class="container main-content" id="main-content">
+  <div class="reminder-list">
+    <% orders.forEach(o => { %> <% if (o.reminder_id && o.status !==
+    'completed') { %>
+    <div class="reminder-card">
+      <span class="reminder-title">⚠ Reminder</span>
+      <p class="reminder-text">
+        Your loan for <strong><%= o.product_name %></strong> has been reminded
+        by admin. Please return it as soon as possible.
+      </p>
+    </div>
+    <% } %> <% }) %>
+  </div>
+  <div class="top-section">
+    <h1 class="order-title">YOUR ORDERS</h1>
+    <div class="filters">
+      <button class="filter-btn active" id="filter-all">ALL ORDERS</button>
+      <button class="filter-btn inactive" id="filter-loaned">LOANED</button>
+      <button class="filter-btn inactive" id="filter-completed">
+        COMPLETED
+      </button>
+    </div>
+  </div>
+
+  <div class="order-card-list">
+    <% if (!orders || orders.length === 0) { %>
+    <p style="text-align: center; margin-top: 20px">No orders found.</p>
+    <% } else { %> <% orders.forEach(order => { %>
+
+    <div
+      class="order-card"
+      data-status="<%= 
+            order.status === 'pending' ? 'paid' : 
+            order.status === 'in use' ? 'in-use' :
+            order.status === 'overdue' ? 'overdue' :
+            order.status === 'completed' ? 'complete' : 'paid'
+        %>"
+    >
+      <div class="order-img-wrap">
+        <img
+          src="<%= order.product_image ? '/uploads/' + order.product_image : '/Assets/default.png' %>"
+          class="product-image"
+        />
+      </div>
+
+      <div class="order-details">
+        <div class="detail-item">
+          <span class="detail-label label-name">NAMA PRODUCT :</span>
+          <span class="detail-value product-name"
+            ><%= order.product_name %></span
+          >
+        </div>
+
+        <div class="detail-item quantity-wrap">
+          <span class="detail-label label-quantity">QUANTITY PRODUCT :</span>
+          <span class="detail-value quantity"><%= order.qty %>x</span>
+        </div>
+
+        <div class="detail-item detail-all-orders">
+          <span class="detail-label label-total">TOTAL PRODUCT :</span>
+          <span class="detail-value total"
+            >Rp<%= Number(order.price).toLocaleString() %></span
+          >
+        </div>
+
+        <div class="detail-item detail-all-orders date-wrap">
+          <span class="detail-label label-date">LOAN DATE :</span>
+          <span class="detail-value date"
+            ><%= order.tgl_pinjam %> - <%= order.tgl_kembali %></span
+          >
+        </div>
+      </div>
+
+      <div class="detail-item status-col">
+        <span class="detail-label">STATUS :</span>
+        <span
+          class="status-badge <%= order.status === 'pending' ? 'paid' : order.status === 'in use' ? 'in-use' : order.status === 'overdue' ? 'overdue' : order.status === 'completed' ? 'complete' : '' %>"
+        >
+          <%= order.status === 'pending' ? "Paid" : order.status === 'in use' ?
+          "In Use" : order.status === 'overdue' ? "Overdue" : order.status ===
+          'completed' ? "Returned" : "" %>
+        </span>
+      </div>
+    </div>
+
+    <% }) %> <% } %>
+  </div>
+</div>

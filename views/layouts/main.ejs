@@ -35,7 +35,9 @@
 
   <body>
     <!-- Header Partial -->
-    <%- include('../partials/header') %>
+    <% if (typeof showHeader === 'undefined' || showHeader !== false) { %>
+      <%- include('../partials/header') %>
+    <% } %>
 
     <main><%- content %></main>
 
@@ -43,7 +45,14 @@
     <% if (showFooter !== false) { %> <%- include('../partials/footer') %> <% }
     %>
 
+    <!-- JS Global -->
+    <script src="/JS/user/main-script.js"></script>
+
     <!-- JS Tambahan -->
-    <script src="/JS/script.js"></script>
+    <% // CEK APAKAH VARIABEL 'scriptFile' ADA, jika tidak, gunakan null. const
+    scriptPath = (typeof scriptFile !== 'undefined') ? scriptFile : null; %> <%
+    if (scriptPath) { %>
+    <script src="<%= scriptPath %>"></script>
+    <% } %>
   </body>
 </html>

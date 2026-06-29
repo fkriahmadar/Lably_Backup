@@ -1,0 +1,60 @@
+<div class="auth-container">
+  <div class="auth-left">
+    <a href="/" class="btn-back">
+      <i class="bi bi-arrow-left"></i>
+      <span>Back</span></a
+    >
+
+    <div class="auth-content">
+      <h1>Create Your Account</h1>
+      <p>Buat Akun Peminjaman Anda</p>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <a href="/" class="btn-back">
+      <i class="bi bi-arrow-left"></i>
+      <span>Back</span></a
+    >
+
+    <% if (message) { %>
+    <div class="popup <%= message.type %>">
+      <p><%= message.text %></p>
+    </div>
+    <% } %>
+    <h2>Sign Up</h2>
+
+    <form action="/register" method="POST" class="auth-form">
+      <div class="input-group">
+        <input type="text" name="username" placeholder="Full Name" required />
+      </div>
+
+      <div class="input-group">
+        <input type="email" name="email" placeholder="Email Address" required />
+      </div>
+
+      <div class="input-group">
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn-auth">Sign Up</button>
+
+      <p class="text-small">
+        Already have an account?
+        <a href="/login">Sign In</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<script>
+  setTimeout(() => {
+    const popup = document.querySelector(".popup");
+    if (popup) popup.remove();
+  }, 3000);
+</script>

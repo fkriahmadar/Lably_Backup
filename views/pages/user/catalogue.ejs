@@ -1,0 +1,227 @@
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container hero-content">
+    <h1>Our Catalogue</h1>
+  </div>
+</section>
+
+<!-- Edge Section -->
+<section>
+  <div class="edge"></div>
+</section>
+
+<!-- Catalogue Section -->
+<section class="catalogue">
+  <div class="container filter-container">
+    <!-- FILTER WRAP -->
+    <div class="filter-wrap">
+      <!-- CATEGORY FILTER -->
+      <div class="filter-group">
+        <select
+          class="custom-select"
+          id="filterCategory"
+          aria-label="Filter by Category"
+        >
+          <option value="all" <%= (!selectedCategory || selectedCategory === 'all') ? 'selected' : '' %>>Categories</option>
+
+          <!-- kategori otomatis dari database -->
+          <% categories.forEach(cat => { %>
+          <option value="<%= cat.id %>" <%= (String(selectedCategory) === String(cat.id)) ? 'selected' : '' %>><%= cat.name %></option>
+          <% }) %>
+        </select>
+        <i class="bi bi-chevron-down"></i>
+      </div>
+
+      <!-- PRICE FILTER -->
+      <div class="filter-group">
+        <select
+          class="custom-select"
+          id="filterPrice"
+          aria-label="Filter by Price"
+        >
+          <option value="all" <%= (!selectedPrice || selectedPrice === 'all') ? 'selected' : '' %>>Price</option>
+          <option value="0-500000" <%= (selectedPrice === '0-500000') ? 'selected' : '' %>>IDR 0 - 500rb</option>
+          <option value="500001-1000000" <%= (selectedPrice === '500001-1000000') ? 'selected' : '' %>>IDR 500rb - 1jt</option>
+          <option value="1000001-2000000" <%= (selectedPrice === '1000001-2000000') ? 'selected' : '' %>>IDR 1jt - 2jt</option>
+          <option value="2000001-above" <%= (selectedPrice === '2000001-above') ? 'selected' : '' %>>IDR 2jt+</option>
+        </select>
+        <i class="bi bi-chevron-down"></i>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-group">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        id="filterSearch"
+        placeholder="Search"
+        aria-label="Search items"
+      />
+    </div>
+
+    <div id="filterDebug" class="filter-debug" style="margin-top:12px;font-size:0.95rem;color:#666;"></div>
+  </div>
+
+  <!-- PRODUCT LIST -->
+  <div class="container catalogue-content">
+    <div class="catalogue-grid" id="catalogueList">
+      <% products.forEach(p => { %>
+      <a href="/product/<%= p.id %>" class="catalogue-link">
+        <div
+          class="catalogue-item"
+          data-category="<%= p.id_category %>"
+          data-price="<%= p.price %>"
+          data-name="<%= p.name.toLowerCase() %>"
+        >
+          <div class="item-img">
+            <img src="/uploads/<%= p.image %>" alt="<%= p.name %>" />
+          </div>
+
+          <p class="item-name"><%= p.name %></p>
+          <p class="item-price">
+            IDR <%= Number(p.price).toLocaleString("id-ID") %>
+          </p>
+        </div>
+      </a>
+      <% }) %>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination">
+    <!-- PREV -->
+    <% if (currentPage > 1) { %>
+    <a href="/catalogue?page=<%= currentPage - 1 %>" class="page-prev">
+      <i class="bi bi-chevron-left"></i> Prev
+    </a>
+    <% } %>
+
+    <!-- PAGES -->
+    <% for (let i = 1; i <= totalPages; i++) { %>
+    <a
+      href="/catalogue?page=<%= i %>"
+      class="page-number <%= currentPage === i ? 'active' : '' %>"
+    >
+      <%= i %>
+    </a>
+    <% } %>
+
+    <!-- NEXT -->
+    <% if (currentPage < totalPages) { %>
+    <a href="/catalogue?page=<%= currentPage + 1 %>" class="page-next">
+      Next <i class="bi bi-chevron-right"></i>
+    </a>
+    <% } %>
+  </div>
+</section>
+
+<!-- FILTER SCRIPT -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const categorySelect = document.getElementById("filterCategory");
+    const priceSelect = document.getElementById("filterPrice");
+    const searchInput = document.getElementById("filterSearch");
+    const items = document.querySelectorAll(".catalogue-item");
+    const debugEl = document.getElementById("filterDebug");
+
+    function getCounts() {
+      const counts = {};
+      items.forEach((it) => {
+        const c = it.dataset.category || "<empty>";
+        counts[c] = (counts[c] || 0) + 1;
+      });
+      return counts;
+    }
+
+    function applyFilters() {
+      const categoryValue = categorySelect.value;
+      const selectedText = categorySelect.options[categorySelect.selectedIndex]?.text || "";
+      const priceRange = priceSelect.value;
+      const searchTerm = searchInput.value.toLowerCase();
+
+      // diagnostics
+      let matchedCount = 0;
+      const sample = [];
+
+      items.forEach((item, idx) => {
+        const itemCategory = item.dataset.category;
+        const itemPrice = Number(item.dataset.price);
+        const itemName = item.dataset.name;
+
+        let show = true;
+
+        /* CATEGORY (type-safe comparison) */
+        if (categoryValue !== "all") {
+          // prefer numeric comparison when possible
+          const catNum = Number(categoryValue);
+          const itemCatNum = Number(itemCategory);
+
+          if (!isNaN(catNum) && !isNaN(itemCatNum)) {
+            show = show && itemCatNum === catNum;
+          } else {
+            show = show && String(itemCategory).trim() === String(categoryValue).trim();
+          }
+        }
+
+        /* PRICE */
+        if (priceRange !== "all") {
+          const [min, max] = priceRange.split("-");
+
+          if (max === "above") {
+            show = show && itemPrice >= Number(min);
+          } else {
+            show = show && itemPrice >= Number(min) && itemPrice <= Number(max);
+          }
+        }
+
+        /* SEARCH */
+        if (searchTerm.trim() !== "") {
+          show = show && itemName.includes(searchTerm);
+        }
+
+        /* SHOW / HIDE */
+        item.parentElement.style.display = show ? "block" : "none";
+
+        if (show) matchedCount++;
+        if (sample.length < 6) sample.push({ idx, itemCategory, itemName, show });
+      });
+
+      const counts = getCounts();
+      const countsText = Object.entries(counts)
+        .map(([k, v]) => `${k}:${v}`)
+        .join(', ');
+      if (debugEl) debugEl.textContent = debugText;
+      console.log("Filter diagnostics:", debugText, sample);
+    }
+
+    categorySelect.addEventListener("change", () => {
+      const cat = categorySelect.value;
+      const params = new URLSearchParams(window.location.search);
+
+      if (cat === "all") params.delete("category");
+      else params.set("category", cat);
+
+      // preserve search and price filters when navigating
+      const s = searchInput.value.trim();
+      if (s) params.set("search", s); else params.delete("search");
+
+      const p = priceSelect.value;
+      if (p && p !== "all") params.set("price", p); else params.delete("price");
+
+      // reset to first page
+      params.set("page", "1");
+
+      // navigate
+      window.location = "/catalogue?" + params.toString();
+    });
+
+    // still support client-side for price and search within the loaded page
+    priceSelect.addEventListener("change", applyFilters);
+    searchInput.addEventListener("keyup", applyFilters);
+
+    // apply filters initially in case a value is pre-selected
+    applyFilters();
+  });
+</script>

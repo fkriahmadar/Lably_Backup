@@ -1,0 +1,26 @@
+<div class="right">
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <span>Category Detail</span>
+        <img src="/Assets/profile.jpg" alt="profile">
+    </div>
+
+    <div class="category-container">
+
+        <div class="category-card">
+            <h2 class="category-title">Edit Category</h2>
+
+            <form method="POST" action="/category/update/<%= category.id %>">
+                <label>Name</label>
+                <input type="text" name="name" class="form-input" value="<%= category.name %>">
+
+                <div class="form-actions">
+                    <button class="btn-submit">UPDATE CATEGORY</button>
+                    <a href="/category" class="btn-back">BACK</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

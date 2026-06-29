@@ -1,0 +1,213 @@
+#ewallet-qr-container, #ewallet-qr-container * {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+#ewallet-qr-container {
+    background-color: transparent; /* container itself is positioned by checkout overlay */
+}
+
+#ewallet-qr-container .container{
+    margin: 20px auto;
+    background-color: rgb(245, 248, 248);
+    width: 300px;
+    height: calc(100vh - 40px);
+    border-radius: 10px;
+    overflow: hidden;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+#ewallet-qr-container .title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 40px;
+    box-shadow: 0 1px 6px -1px rgba(0, 0, 0, 0.1), 0 1px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+#ewallet-qr-container .title h2{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#ewallet-qr-container .title a{
+    position: absolute;
+    left: 12px;
+}
+
+#ewallet-qr-container .text1 h2{
+    display: flex;
+    justify-content: center;
+    padding: 10px 10px 10px 10px;
+    margin: auto 30px;
+    border-radius: 5px;
+    background-color: rgba(62, 168, 255, 0.37);
+    border: 1px solid rgba(0, 140, 255, 0.37);
+    margin-top: 15px;
+    font-size: 11px;
+}
+
+#ewallet-qr-container .text1 p{
+    font-size: 10px;
+    text-align: center;
+    margin: auto 30px;
+    margin-top: 5px;
+}
+
+#ewallet-qr-container .cost{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto 15px;
+    gap: 5px;
+    border-bottom: 1px dashed rgb(104, 104, 104);
+    margin-top: 15px;
+    padding-bottom: 10px;
+}
+
+#ewallet-qr-container .cost p{
+    font-size: 10px;
+    color: rgb(51, 51, 51);
+}
+
+#ewallet-qr-container .cost h2{
+    font-size: 20px;
+    color: rgb(0, 89, 255);
+}
+
+#ewallet-qr-container .text{
+    display: flex;
+    justify-content: center;
+    margin: auto 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#ewallet-qr-container .text p{
+    font-size: 10px;
+    text-align: center;
+    color: rgb(51, 51, 51);
+    font-weight: 500;
+}
+
+#ewallet-qr-container .QR-code{
+    position: relative;
+    margin: 20px auto;
+    height: 160px;
+    width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ewallet-qr-container .QR-code .corner{
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border: 2px solid rgb(0, 89, 255);
+}
+
+#ewallet-qr-container .QR-code .top-left{
+    top: -10px;
+    left: -10px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 6px 0 0 0;
+}
+
+#ewallet-qr-container .QR-code .top-right{
+    top: -10px;
+    right: -10px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 6px 0 0;
+}
+
+#ewallet-qr-container .QR-code .bottom-left{
+    bottom: -10px;
+    left: -10px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 6px;
+}
+
+#ewallet-qr-container .QR-code .bottom-right{
+    bottom: -10px;
+    right: -10px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 6px 0;
+}
+
+/* logo inside QR */
+#ewallet-qr-container .logo-dana {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+
+#ewallet-qr-container #ewallet-qrcode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#ewallet-qr-container .text2{
+    margin: auto 15px;
+    background-color: rgba(62, 168, 255, 0.37);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#ewallet-qr-container .text2 i{
+    color: rgb(0, 89, 255);
+    font-size: 25px;
+}
+
+#ewallet-qr-container .text2 p{
+    font-size: 10px;
+}
+
+#ewallet-qr-container .border{
+    margin: auto 15px;
+    margin-top: 15px;
+    border-top: 1px dashed rgb(104, 104, 104);
+}
+
+#ewallet-qr-container .finish{
+    margin: auto 15px;
+    margin-top: 15px;
+    width: calc(300px - 30px);
+    padding: 15px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(0, 89, 255);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    color: white;
+}
+
+#ewallet-qr-container .button .finish:hover{
+    box-shadow: 0 8px 20px rgba(0, 89, 255, 0.3),
+                0 3px 6px rgba(0, 140, 255, 0.37);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+#ewallet-qr-container .button .finish:active{
+    box-shadow: 0 2px 6px rgba(0, 89, 255, 0.3);
+    transform: translateY(1px);
+}

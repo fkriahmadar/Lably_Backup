@@ -1,0 +1,303 @@
+<nav class="navbar">
+  <span>Orders</span>
+  <img src="Assets/profile.jpg" alt="" />
+</nav>
+
+<!-- ORDER TOTAL INFO -->
+<div class="order-info">
+  <div class="box">
+    <div class="total pending total"><%= totalPending %></div>
+    <div class="detail pending-detail">
+      <span class="pending">ITEMS</span>
+      <span>PENDING REQUEST</span>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="total loan-total"><%= totalLoaned %></div>
+    <div class="detail loan-detail">
+      <span class="loan">ITEMS</span>
+      <span>CURRENTLY LOANED</span>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="total overdue-total"><%= totalOverdue %></div>
+    <div class="detail overdue-detail">
+      <span class="overdue">ITEMS</span>
+      <span>OVERDUE RETURNS</span>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="filter">
+  <form action="/order" method="GET" class="search search-form">
+    <input
+      type="text"
+      name="search"
+      placeholder="Search"
+      value="<%= search || '' %>"
+    />
+    <button type="submit" class="btn-search">
+      <i class="bi bi-search"></i>
+    </button>
+  </form>
+</div>
+
+<!-- FILTER BUTTONS + DATE RANGE -->
+<div class="menu-option">
+  <div class="menu-options">
+    <form action="/order" method="GET">
+      <button type="submit" class="btn-search <%= !filter ? 'active' : '' %>">
+        ALL
+      </button>
+    </form>
+
+    <form action="/order" method="GET">
+      <input type="hidden" name="filter" value="pending" />
+      <button
+        type="submit"
+        class="btn-search <%= filter === 'pending' ? 'active' : '' %>"
+      >
+        PENDING
+      </button>
+    </form>
+
+    <form action="/order" method="GET">
+      <input type="hidden" name="filter" value="in use" />
+      <button
+        type="submit"
+        class="btn-search <%= filter === 'in use' ? 'active' : '' %>"
+      >
+        IN USE
+      </button>
+    </form>
+
+    <form action="/order" method="GET">
+      <input type="hidden" name="filter" value="overdue" />
+      <button
+        type="submit"
+        class="btn-search <%= filter === 'overdue' ? 'active' : '' %>"
+      >
+        OVERDUE
+      </button>
+    </form>
+  </div>
+
+  <div class="date">
+    <form action="/order" method="GET" style="display: flex; gap: 5px">
+      <input type="date" name="start" value="<%= start || '' %>" /> :
+      <input type="date" name="end" value="<%= end || '' %>" />
+      <button type="submit" class="btn-search">Filter</button>
+    </form>
+  </div>
+</div>
+
+<!-- TITLE -->
+<div class="page-text">
+  <span>List Of All Orders</span>
+
+  <form action="/order-completed" method="GET">
+    <button type="submit" class="btn-search">
+      Completed <i class="bi bi-check-circle"></i>
+    </button>
+  </form>
+</div>
+
+<!-- JSON DATA FOR JS PAGINATION -->
+<script id="orders-json" type="application/json">
+  <%- JSON.stringify(orders) %>
+</script>
+
+<!-- ORDER TABLE -->
+<div class="customer-table">
+  <table>
+    <thead>
+      <tr class="even">
+        <th>No</th>
+        <th>Customer</th>
+        <th>Equipment</th>
+        <th>Loan Period</th>
+        <th>Status</th>
+        <th class="actions">Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="ordersTableBody">
+      <!-- Row dibuat menggunakan JS -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination Container -->
+<div class="pagination" id="paginationOrders"></div>
+
+<!-- POPUP CONFIRMATION -->
+<div id="popup-overlay">
+  <div id="popup-box">
+    <h2 id="popup-title"></h2>
+    <p id="popup-message"></p>
+
+    <div class="popup-actions">
+      <form id="popup-form" method="POST">
+        <button type="submit" class="popup-yes">Yes</button>
+      </form>
+
+      <button class="popup-no" onclick="closePopup()">No</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showPopup(actionUrl, message) {
+    document.getElementById("popup-title").innerText = "Confirmation";
+    document.getElementById("popup-message").innerText = message;
+    document.getElementById("popup-form").action = actionUrl;
+
+    document.getElementById("popup-overlay").classList.add("show");
+    document.getElementById("popup-box").classList.add("show");
+  }
+
+  function closePopup() {
+    document.getElementById("popup-overlay").classList.remove("show");
+    document.getElementById("popup-box").classList.remove("show");
+  }
+
+  const ordersData = JSON.parse(
+    document.getElementById("orders-json").textContent
+  );
+
+  const tableBody = document.getElementById("ordersTableBody");
+  const pagination = document.getElementById("paginationOrders");
+
+  const ROWS_PER_PAGE = 5;
+  let currentPage = 1;
+
+  function createOrderRow(o, index) {
+    const tr = document.createElement("tr");
+
+    let actionButtons = "";
+
+    if (o.status === "pending") {
+      actionButtons = `
+        <button type="button" class="btn-approve"
+          onclick="showPopup('/order/approve/${o.id}', 'Do you want to approve this order?')">
+          Approve
+        </button>
+
+        <button type="button" class="btn-reject"
+          onclick="showPopup('/order/reject/${o.id}', 'This action will permanently delete this order.')">
+          Reject
+        </button>`;
+    }
+
+    if (o.status === "in use" || o.status === "overdue") {
+      const cls = o.status === "overdue" ? "overdue" : "in-use";
+
+      actionButtons = `
+        <button type="button" class="btn-use-reminder btn ${cls}"
+          onclick="showPopup('/order/reminder/${o.id}', 'Send reminder for this order?')">
+          Reminder
+        </button>
+
+        <button type="button" class="btn-use-check check ${cls}"
+          onclick="showPopup('/order/complete/${o.id}', 'Are you sure you want to mark this order as completed?')">
+          <i class="bi bi-check2"></i>
+        </button>`;
+    }
+
+    tr.innerHTML = `
+      <td>${index}</td>
+      <td>${o.username}</td>
+      <td>${o.product_name}</td>
+      <td>${o.tgl_pinjam} - ${o.tgl_kembali}</td>
+      <td style="text-transform: capitalize">${o.status}</td>
+      <td class="action">
+        <div>${actionButtons}</div>
+      </td>
+    `;
+
+    return tr;
+  }
+
+  function renderOrders() {
+    const totalPages = Math.ceil(ordersData.length / ROWS_PER_PAGE);
+    if (currentPage > totalPages) currentPage = 1;
+
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    const sliced = ordersData.slice(start, start + ROWS_PER_PAGE);
+
+    tableBody.innerHTML = "";
+
+    if (ordersData.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center;padding:20px">
+            No orders found.
+          </td>
+        </tr>`;
+    } else {
+      sliced.forEach((o, i) => {
+        tableBody.appendChild(createOrderRow(o, start + i + 1));
+      });
+    }
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    pagination.innerHTML = "";
+    if (totalPages <= 1) return;
+
+    const maxNumbers = 2;
+    let startPage = currentPage;
+    let endPage = Math.min(totalPages, currentPage + maxNumbers - 1);
+
+    if (totalPages <= maxNumbers) {
+      startPage = 1;
+      endPage = totalPages;
+    }
+
+    if (currentPage > totalPages - (maxNumbers - 1)) {
+      startPage = Math.max(1, totalPages - (maxNumbers - 1));
+      endPage = totalPages;
+    }
+
+    if (currentPage > 1) {
+      const prev = document.createElement("button");
+      prev.className = "page-prev";
+      prev.innerHTML = `<i class="bi bi-chevron-left"></i> PREV`;
+      prev.onclick = () => {
+        currentPage--;
+        renderOrders();
+      };
+      pagination.appendChild(prev);
+    }
+
+    for (let page = startPage; page <= endPage; page++) {
+      const btn = document.createElement("button");
+      btn.className = "page-number";
+      if (page === currentPage) btn.classList.add("active");
+      btn.textContent = page;
+      btn.onclick = () => {
+        currentPage = page;
+        renderOrders();
+      };
+      pagination.appendChild(btn);
+    }
+
+    if (currentPage < totalPages) {
+      const next = document.createElement("button");
+      next.className = "page-next";
+      next.innerHTML = `NEXT <i class="bi bi-chevron-right"></i>`;
+      next.onclick = () => {
+        currentPage++;
+        renderOrders();
+      };
+      pagination.appendChild(next);
+    }
+  }
+
+  renderOrders();
+</script>

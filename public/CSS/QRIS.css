@@ -1,0 +1,201 @@
+.qris-root *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.qris-root{
+    overflow: hidden;
+    background-color: transparent;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qris-root .container{
+    margin: 20px auto;
+    background-color: rgb(245, 248, 248);
+    width: 300px;
+    max-height: calc(100vh - 40px);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding-bottom: 20px;
+}
+
+.qris-root .title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 40px;
+    box-shadow: 0 1px 6px -1px rgba(0, 0, 0, 0.1), 0 1px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.qris-root .title h2{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.qris-root .title a{
+    position: absolute;
+    left: 12px;
+}
+
+.qris-root .warning{
+    display: flex;
+    justify-content: center;
+    padding: 10px 10px 10px 10px;
+    margin: auto 30px;
+    border-radius: 5px;
+    background-color: rgba(62, 168, 255, 0.37);
+    border: 1px solid rgba(0, 140, 255, 0.37);
+    margin-top: 15px;
+}
+
+.qris-root .warning p{
+    font-size: 11px;
+    color: rgb(51, 51, 51);
+}
+
+.qris-root .cost{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: auto 15px;
+    border-bottom: 1px dashed rgb(104, 104, 104);
+    margin-top: 15px;
+    padding-bottom: 15px;
+}
+
+.qris-root .cost p{
+    font-size: 10px;
+    color: rgb(51, 51, 51);
+}
+
+.qris-root .cost h2{
+    font-size: 20px;
+    color: rgb(0, 89, 255);
+}
+
+.qris-root .text{
+    display: flex;
+    justify-content: center;
+    margin: auto 60px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.qris-root .text p{
+    font-size: 10px;
+    text-align: center;
+    color: rgb(51, 51, 51);
+    font-weight: 500;
+}
+
+.qris-root .QR-code{
+    position: relative;
+    margin: 20px auto;
+    height: 160px;
+    width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qris-root .QR-code .corner{
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border: 2px solid rgb(0, 89, 255);
+}
+
+.qris-root .QR-code .top-left{
+    top: -10px;
+    left: -10px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 6px 0 0 0;
+}
+
+.qris-root .QR-code .top-right{
+    top: -10px;
+    right: -10px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 6px 0 0;
+}
+
+.qris-root .QR-code .bottom-left{
+    bottom: -10px;
+    left: -10px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 6px;
+}
+
+.qris-root .QR-code .bottom-right{
+    bottom: -10px;
+    right: -10px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 6px 0;
+}
+
+.qris-root .QRIS-logo{
+    margin: auto 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 30px;
+    padding-bottom: 15px;
+}
+
+.qris-root .QRIS-logo img{
+    height: 22px;
+}
+
+.qris-root .QRIS-logo-text p{
+    font-size: 9px;
+    line-height: 1.2;
+}
+
+.qris-root .border{
+    border-bottom: 1px dashed rgb(104, 104, 104);
+    margin: auto 15px;
+}
+
+.qris-root .button{
+    margin: auto 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    margin-top: 15px;
+}
+
+.qris-root .button button{
+    background-color: rgb(0, 89, 255);
+    color: white;
+    border: none;
+    height: 50px;
+    width: calc(300px - 30px);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.qris-root .button button:hover{
+    box-shadow: 0 8px 20px rgba(0, 89, 255, 0.45),
+                0 3px 6px rgba(0, 89, 255, 0.25);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+.qris-root .button button:active{
+    box-shadow: 0 2px 6px rgba(0, 89, 255, 0.3);
+    transform: translateY(1px);
+}

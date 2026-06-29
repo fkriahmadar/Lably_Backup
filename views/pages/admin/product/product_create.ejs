@@ -1,0 +1,118 @@
+<nav class="navbar">
+  <span>Product Create</span>
+  <img src="/Assets/profile.jpg" alt="" />
+</nav>
+
+<section class="form-card">
+  <h2 class="form-card-title">Add Product</h2>
+
+  <form class="product-form" action="/product/create" method="POST" enctype="multipart/form-data">
+
+    <!-- NAME -->
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        name="name" 
+        placeholder="Name..." 
+        required
+      />
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <input 
+        type="text" 
+        id="description" 
+        name="description" 
+        placeholder="Description..." 
+        required
+      />
+    </div>
+
+    <!-- CATEGORY -->
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" name="id_category" required
+        style="padding: 0.8rem 1rem; border: 1px solid var(--primary); border-radius: .5rem; background-color: white;">
+        <option value="">-- Choose Category --</option>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat.id %>"><%= cat.name %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <!-- STOCK -->
+    <div class="form-group">
+      <label for="stock">Stock</label>
+      <input 
+        type="number" 
+        id="stock" 
+        name="stock" 
+        placeholder="Stock..." 
+        required
+      />
+    </div>
+
+    <!-- CONDITION (db: kondisi) -->
+    <div class="form-group">
+      <label for="kondisi">Condition</label>
+      <input 
+        type="text" 
+        id="kondisi" 
+        name="kondisi" 
+        placeholder="Condition..." 
+        required
+      />
+    </div>
+
+    <!-- PRICE -->
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input 
+        type="number" 
+        id="price" 
+        name="price" 
+        placeholder="Price..." 
+        required
+      />
+    </div>
+
+    <!-- IMAGE UPLOAD -->
+    <div class="form-group full-width file-upload-group">
+      <label for="image">Image</label>
+
+      <div class="file-input-wrapper">
+        <input 
+          type="file" 
+          id="image" 
+          name="image" 
+          class="hidden-file-input" 
+          required
+        />
+        <label for="image" class="custom-file-button">Choose File</label>
+        <span class="file-name">No File Chosen</span>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="form-actions full-width">
+      <a href="/product-list" class="btn-back">BACK</a>
+      <button type="submit" class="btn-add-product">ADD PRODUCT</button>
+    </div>
+
+  </form>
+</section>
+
+<script>
+  const inputFileCreate = document.getElementById("image");
+  const fileNameCreate = document.querySelector(".file-name");
+
+  if (inputFileCreate && fileNameCreate) {
+    inputFileCreate.addEventListener("change", () => {
+      fileNameCreate.textContent = inputFileCreate.files[0]?.name || "No File Chosen";
+    });
+  }
+</script>

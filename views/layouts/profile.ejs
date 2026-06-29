@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Sansation:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" href="/css/sidebar-profile.css" />
+
+    <!-- Page-specific CSS -->
+    <% if (typeof style !== "undefined" && style) { %> <%- style %> <% } %>
+    <title><%= typeof title !== 'undefined' ? title : 'Lably' %></title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/css/intlTelInput.css"/>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <%- include('../partials/sidebar-profile') %>
+        </div>
+        <div class="right">
+            <%- content %>
+        </div>
+    </div>
+    <% const allowPopup = typeof showPopup !== "undefined" ? showPopup : true;
+       const popupMessage = typeof message !== "undefined" ? message : null; %>
+    <% if (allowPopup && popupMessage) { %>
+      <div class="popup <%= popupMessage.type %>" id="serverPopup"><%= popupMessage.text %></div>
+      <script>
+        (function() {
+          const p = document.getElementById('serverPopup');
+          if (p) {
+            setTimeout(() => {
+              p.style.transition = 'opacity 0.4s ease';
+              p.style.opacity = '0';
+              setTimeout(() => p.remove(), 400);
+            }, 3000);
+          }
+        })();
+      </script>
+    <% } %>
+    <% if (typeof scriptFile !== 'undefined' && scriptFile) { %>
+    <script src="<%= scriptFile %>"></script>
+    <% } %>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js">
+    </script>
+    
+</body>
+</html>

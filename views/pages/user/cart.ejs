@@ -1,0 +1,93 @@
+<div class="container cart">
+  <div class="cart-table-header">
+    <h3 class="title">My Cart</h3>
+    <form method="post" action="/cart/clear" style="display:inline">
+      <button class="col-remove-btn">REMOVE ALL</button>
+    </form>
+  </div>
+
+  <div class="cart-items-list">
+    <% if (!cartItems || cartItems.length === 0) { %>
+      <p class="cart-empty">Your cart is empty.</p>
+    <% } else { %>
+      <% cartItems.forEach(function(item){ %>
+        <% 
+          // compute rental days from borrow_date and return_date (inclusive or exclusive? use difference in days)
+          function computeDays(borrow, ret) {
+            try {
+              if (!borrow || !ret) return 1;
+              const a = new Date(borrow);
+              const b = new Date(ret);
+              // difference in milliseconds, convert to days
+              const diff = Math.ceil((b - a) / (1000 * 60 * 60 * 24));
+              return diff > 0 ? diff : 1;
+            } catch (e) { return 1; }
+          }
+          const itemDays = computeDays(item.borrow_date, item.return_date);
+        %>
+        <div class="cart-item">
+          <div class="item-img-wrap">
+            <% /* image handling: if you store filenames, show with /uploads/... */ %>
+            <img src="<%= item.image %>" alt="<%= item.name %>">
+          </div>
+          <div class="item-detail">
+            <div class="type-wrap">
+              <p class="name">Nama Product</p>
+              <span class="item-name"><%= item.name %></span>
+            </div>
+            <div class="type-wrap">
+              <p class="duration">Durasi Hari</p>
+              <span class="item-days"><%= itemDays %> Hari</span>
+            </div>
+            <div class="type-wrap">
+              <p class="price">Harga</p>
+              <span class="item-price">Rp<%= Number(item.price).toLocaleString() %></span>
+            </div>
+            <div class="type-wrap">
+              <p class="quantity">Jumlah</p>
+              <span class="item-quantity"><%= item.quantity %></span>
+            </div>
+            <div class="type-wrap">
+              <p class="total">Total</p>
+              <span class="item-total">Rp<%=(Number(item.all_total) || (Number(item.price) * Number(item.quantity) * Number(itemDays))).toLocaleString()%>
+              </span>
+            </div>
+          </div>
+          <form method="post" action="/cart/remove" style="display:inline">
+            <input type="hidden" name="product_id" value="<%= item.product_id %>" />
+            <button class="item-remove-btn" type="submit">
+              <i class="bi bi-x-circle-fill"></i>
+            </button>
+          </form>
+        </div>
+      <% }); %>
+    <% } %>
+  </div>
+
+  <div class="container cart-summary-footer">
+    <div class="summary-details">
+      <span>Total</span>
+      <span>
+        Rp<%=
+          (cartItems || []).reduce(function(sum, it){
+            // compute rental days for summary (fallback to 1)
+            function computeDays(borrow, ret) {
+              try {
+                if (!borrow || !ret) return 1;
+                const a = new Date(borrow);
+                const b = new Date(ret);
+                const diff = Math.ceil((b - a) / (1000 * 60 * 60 * 24));
+                return diff > 0 ? diff : 1;
+              } catch (e) { return 1; }
+            }
+
+            const days = computeDays(it.borrow_date, it.return_date);
+            const itemTotal = Number(it.all_total) || (Number(it.price) * Number(it.quantity) * Number(days));
+            return sum + itemTotal;
+          }, 0).toLocaleString()
+        %>
+      </span>
+    </div>
+    <a href="/checkout" class="btn btn-primary">Checkout</a>
+  </div>
+</div>

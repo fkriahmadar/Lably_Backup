@@ -1,0 +1,61 @@
+<div class="logo">Lab<span>Ly</span></div>
+<div class="left-menu">
+  <div
+    class="menu dashboard <%= currentPage === '/dashboard' ? 'active' : '' %>"
+  >
+    <a href="/dashboard">
+      <i class="bi bi-house-door"></i>
+      <span>Dashboard</span>
+    </a>
+  </div>
+  <div
+    class="menu Customers <%= currentPage === '/customer' ? 'active' : '' %>"
+  >
+    <a href="/customer">
+      <i class="bi bi-person"></i>
+      <span>Customers</span>
+    </a>
+  </div>
+  <div
+    class="menu Products <%= currentPage === '/product-list' || currentPage === '/product-create' || currentPage === '/product-detail' ? 'active' : '' %>"
+  >
+    <a href="/product-list">
+      <i class="bi bi-cart"></i>
+      <span>Products</span>
+    </a>
+  </div>
+  <div
+    class="menu Order <%= currentPage === '/order' || currentPage === '/order-completed' ? 'active' : '' %>"
+  >
+    <a href="/order">
+      <i class="bi bi-basket2"></i>
+      <span>Order</span>
+    </a>
+  </div>
+  <div
+    class="menu Analytics <%= currentPage === '/analytics' ? 'active' : '' %>"
+  >
+    <a href="/analytics">
+      <i class="bi bi-bar-chart-line"></i>
+      <span>Analytics</span>
+    </a>
+  </div>
+  <div class="menu Invoice">
+    <a href="/invoice">
+      <i class="bi bi-receipt-cutoff"></i>
+      <span>Invoice</span>
+    </a>
+  </div>
+  <div class="menu Category <%= currentPage === '/category' ? 'active' : '' %>">
+    <a href="/category">
+      <i class="bi bi-collection"></i>
+      <span>Category</span>
+    </a>
+  </div>
+</div>
+<div class="logout">
+  <a href="/logout">
+    <i class="bi bi-box-arrow-right"></i>
+    <span>Log Out</span>
+  </a>
+</div>

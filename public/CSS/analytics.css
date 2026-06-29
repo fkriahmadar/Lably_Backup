@@ -1,0 +1,152 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.container {
+  display: grid;
+  height: 100vh;
+  grid-template-areas: "left right";
+  grid-template-columns: 1fr 4fr;
+  background: #f8f9ff;
+}
+
+.right {
+  grid-area: right;
+  background-color: #ffffff;
+  min-height: 100vh;
+  overflow-y: auto;
+  padding: 0 2rem;
+}
+
+.navbar {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3rem 0;
+}
+
+.navbar span {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.navbar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.information {
+  display: flex;
+  margin: 0.3rem 0;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.total {
+  background-color: var(--background-product);
+  width: 250px;
+  padding: 0.6rem 1.1rem;
+  line-height: 1.5rem;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b1b1b1;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.qty {
+  font-size: 1.4rem;
+  color: var(--primary);
+}
+
+.total {
+  border-left: 10px solid var(--primary);
+}
+
+.total-items {
+  border-left: 10px solid #f1930b;
+}
+
+.total-trs{
+  border-left: 10px solid #ff0000;
+}
+
+.total-income{
+  border-left: 10px solid #00ff55;
+}
+
+.page-text {
+  margin-top: 1.5rem;
+  color: #0b4487;
+  font-size: 24px;
+  font-weight: 650;
+}
+
+.monthly-activity-table {
+  margin: 1rem 0;
+  box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.monthly-activity-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.top-table {
+  margin: 0.6rem 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.top-page-text {
+  margin: 10px 30px 10px 0;
+  color: var(--primary);
+  font-size: 24px;
+  font-weight: 650;
+}
+
+.top-loan,
+.top-cust {
+  width: 50%;
+}
+
+.top-table td {
+  width: 150px;
+  padding: 10px 0;
+}
+
+.top-table .mid {
+  width: 280px;
+}
+
+.table-cust table,
+.table-loan table {
+  border-collapse: collapse;
+  box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+thead {
+  background-color: var(--background-product);
+  font-weight: 500;
+}
+
+th,
+td {
+  padding: 15px 15px;
+  text-align: center;
+  color: var(--base-black);
+  border-bottom: 1px solid #eeeeee;
+}

@@ -1,0 +1,646 @@
+/* ================================
+   GLOBAL RESET (AMAN)
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ================================
+   LAYOUT GRID (SIDEBAR + CONTENT)
+================================ */
+.container {
+  display: grid;
+  height: 100vh;
+  grid-template-areas: "left right";
+  grid-template-columns: 1fr 4fr;
+  background: #f8f9ff;
+}
+
+/* ================================
+   DASHBOARD CONTENT WRAPPER
+================================ */
+.right {
+  grid-area: right;
+  padding: 35px;
+  overflow-y: auto;
+}
+
+/* ================================
+   PROFILE CONTENT WRAPPER
+================================ */
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+/* ================================
+   PROFILE HEADER
+================================ */
+.profile-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a3a6b;
+}
+
+.profile-header p {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 0.2rem;
+}
+
+/* ================================
+   PROFILE BODY (2 KOLOM)
+================================ */
+.profile-body {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ================================
+   PROFILE CARD (BASE)
+================================ */
+.profile-card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.8rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card-title h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a3a6b;
+}
+
+.card-title p {
+  font-size: 0.82rem;
+  color: #aaa;
+  margin-top: 0.2rem;
+  margin-bottom: 1.4rem;
+}
+
+/* ================================
+   INFORMASI PRIBADI (FORM)
+================================ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 0.65rem 1rem;
+  border: 1.5px solid #dde3f0;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #1a3a6b;
+}
+
+/* ================================
+   FORM BUTTONS
+================================ */
+.form-buttons {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.btn-edit {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--primary);
+  color: var(--base-white);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.btn-edit:hover {
+  background: #1b73dfff;
+}
+
+.btn-cancel {
+  width: 100%;
+  padding: 0.75rem;
+  background: #d51c39;
+  color: var(--base-white);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.btn-cancel:hover {
+  background: var(--background-cancel);
+}
+
+.btn-save {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.btn-save:hover {
+  background: #1b73dfff;
+}
+
+/* ================================
+   PROFILE SIDE (KANAN)
+================================ */
+.profile-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ================================
+   AVATAR CARD
+================================ */
+.avatar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+  padding: 1.2rem 1.8rem;
+  background: linear-gradient(135deg, #e8f0ff, #f0f8ff);
+}
+
+.avatar-wrap {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 0.25rem;
+}
+
+.avatar-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-edit-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #1a3a6b;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.avatar-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a3a6b;
+}
+
+.avatar-card p {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ================================
+   KEAMANAN AKUN CARD
+================================ */
+.security-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.security-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.security-list li:last-child {
+  border-bottom: none;
+}
+
+.security-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.security-item i {
+  font-size: 1.2rem;
+  color: #1a3a6b;
+}
+
+.security-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.security-desc {
+  display: block;
+  font-size: 0.78rem;
+  color: #aaa;
+}
+
+.security-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge-nonaktif {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  background: #eef2ff;
+  color: #1a3a6b;
+  font-weight: 500;
+}
+
+/* ================================
+   BANTUAN CARD
+================================ */
+.help-card {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  background: var(--background-product);
+  border: 1.5px solid var(--primary);
+  margin-bottom: -0.5rem;
+}
+
+.help-icon {
+  font-size: 1.6rem;
+  color: #fff;
+  background: #1a3a6b;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.help-text {
+  flex: 1;
+}
+
+.help-text h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a3a6b;
+  margin-bottom: 0.2rem;
+}
+
+.help-text p {
+  font-size: 0.82rem;
+  color: #888;
+}
+
+.btn-support {
+  padding: 0.6rem 1.2rem;
+  background: var(--background-product);
+  color: var(--primary);
+  border: 1.8px solid var(--primary);
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.5s ease;
+  flex-shrink: 0;
+}
+
+.btn-support:hover {
+  background: var(--primary);
+  color: var(--base-white);
+}
+
+/* ================================
+   VERIFIKASI STATUS
+================================ */
+.help-card.verified {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+}
+
+.help-card.verified .help-icon {
+  background: #16a34a;
+}
+
+.help-card.pending {
+  background: #fffbeb;
+  border: 1.5px solid #fca738ff;
+}
+
+.help-card.pending .help-icon {
+  background: #fc9a38ff;
+}
+
+.help-card.rejected {
+  background: #ffededff;
+  border: 1.5px solid #f86363ff;
+}
+
+.help-card.rejected .help-icon {
+  background: #ea0c0cff;
+}
+
+.btn-pending {
+  background: #fc9a38ff !important;
+  color: #fff !important;
+  border: none !important;
+  opacity: 0.8;
+  cursor: not-allowed !important;
+}
+
+.btn-rejected {
+  background: transparent !important;
+  color: #ea260cff !important;
+  border: 2px solid #ea380cff !important;
+}
+
+.btn-rejected:hover {
+  background: #ea260cff !important;
+  color: #fff !important;
+}
+
+/* ================================
+   INPUT KTP
+================================ */
+.ktp-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.ktp-modal-overlay.show {
+  display: flex;
+}
+
+.ktp-modal {
+  background: #1a3a6b;
+  border: 2px solid var(--primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 480px;
+  color: var(--base-white);
+}
+
+.ktp-modal-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.ktp-modal-icon {
+  font-size: 1.6rem;
+  color: var(--base-white);
+  padding-right: 0.8rem;
+  flex-shrink: 0;
+}
+
+.ktp-modal-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.ktp-modal-header p {
+  font-size: 0.82rem;
+  color: #dddddd;
+  margin-bottom: 0.5rem;
+}
+
+.badge-pending {
+  font-size: 0.78rem;
+  background: #d51c39;
+  color: var(--base-white);
+  padding: 0.3rem 0.7rem;
+  border-radius: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ktp-dropzone {
+  border: 2px dashed #888;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: border-color 0.3s;
+}
+
+.ktp-dropzone:hover {
+  border-color: var(--base-white);
+}
+
+.ktp-dropzone i {
+  font-size: 1.8rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.ktp-dropzone p {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 0.2rem;
+}
+
+.ktp-dropzone span {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.ktp-note {
+  font-size: 0.8rem;
+  color: #dddddd;
+  margin-bottom: 1.2rem;
+}
+
+.ktp-modal-actions {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.btn-cancel-modal {
+  flex: 1;
+  padding: 0.7rem;
+  background: #dc3545;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel-modal:hover {
+  background: #b02a37;
+}
+
+.btn-kirim {
+  flex: 2;
+  padding: 0.7rem;
+  background: #1e40af;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.btn-kirim:hover {
+  background: #1d4ed8;
+}
+
+.form-group-pass {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.form-group-pass label {
+  font-size: 0.85rem;
+  color: var(--base-white);
+  font-weight: 500;
+}
+
+.form-group-pass input {
+  padding: 0.65rem 1rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--base-white);
+  background-color: rgba(255, 255, 255, 0.1);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-group-pass input::placeholder {
+  color: #aab4c8;
+  font-size: 0.85rem;
+}
+
+.form-group-pass input:focus {
+  border-color: var(--base-white);
+}
+
+.new-pass {
+  margin-bottom: 2rem;
+}
+
+#phoneDisplay {
+  width: 100%;
+}
+
+.iti {
+  width: 100%;
+}
+
+.iti input {
+  width: 100% !important;
+}
+
+#phone {
+  display: none;
+}
+
+.popup {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+
+  padding: 14px 18px;
+
+  border-radius: 10px;
+
+  color: white;
+  font-weight: 500;
+
+  animation: slideIn 0.3s ease;
+}
+
+.popup.error {
+  background: #dc3545;
+}
+
+.popup.success {
+  background: #198754;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+

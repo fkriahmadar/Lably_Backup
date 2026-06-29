@@ -1,0 +1,267 @@
+<nav class="navbar">
+  <span>Product List</span>
+  <img src="/Assets/profile.jpg" alt="" />
+</nav>
+
+<section class="controls-section">
+  <div class="search-bar">
+    <i class="bi bi-search"></i>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search Products"
+      autocomplete="off"
+    />
+    <button class="search-button" type="button" id="searchButton">
+      <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>
+
+  <a href="/product-create" class="add-product-button">
+    <i class="bi bi-plus-circle"></i>
+    Add Product
+  </a>
+</section>
+
+<!-- Data mentah produk -->
+<script id="product-data-json" type="application/json">
+  <%- JSON.stringify(products) %>
+</script>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th class="col-no">No</th>
+        <th>Name</th>
+        <th>Stock</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th class="col-action">Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="productTableBody">
+      <!-- Semua baris akan digenerate lewat JS -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination container -->
+<div class="pagination" id="paginationContainer"></div>
+
+<!-- Delete Modal -->
+<div class="delete-modal-overlay">
+  <div class="delete-modal">
+    <div class="delete-modal-header">
+      <span>⚠️ Confirm Delete</span>
+    </div>
+    <div class="delete-modal-body">
+      <p>
+        Are you sure you want to delete product "<span
+          id="deleteProductName"
+        ></span
+        >"?
+      </p>
+    </div>
+    <div class="delete-modal-actions">
+      <button type="button" class="btn-cancel" onclick="closeDeleteModal()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-confirm-delete"
+        onclick="confirmDelete()"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // =====================================
+  // INIT
+  // =====================================
+  const searchInput = document.getElementById("searchInput");
+  const searchButton = document.getElementById("searchButton");
+  const tableBody = document.getElementById("productTableBody");
+  const pagination = document.getElementById("paginationContainer");
+
+  const productDataJson =
+    document.getElementById("product-data-json").textContent;
+  const productsData = JSON.parse(productDataJson);
+
+  const ROWS_PER_PAGE = 5;
+  let currentPage = 1;
+
+  // =====================================
+  // Render Row
+  // =====================================
+  function createRow(p, index) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${index}</td>
+      <td>${p.name}</td>
+      <td>${p.stock}</td>
+      <td>Rp ${Number(p.price).toLocaleString("id-ID")}</td>
+      <td>${p.category_name}</td>
+      <td class="btn">
+        <a href="/product-detail/${p.id}" class="btn-action update">Update</a>
+        <button type="button" class="btn-action delete"
+          onclick='openDeleteModal(${p.id}, "${p.name.replace(/"/g, '\\"')}")'>
+          Delete
+        </button>
+      </td>`;
+    return tr;
+  }
+
+  // =====================================
+  // Render Table + Search + Pagination
+  // =====================================
+  function renderTable() {
+    const q = searchInput.value.toLowerCase().trim();
+
+    const filtered = productsData.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        String(p.stock).includes(q) ||
+        String(p.price).includes(q) ||
+        p.category_name.toLowerCase().includes(q)
+    );
+
+    const totalPages = Math.ceil(filtered.length / ROWS_PER_PAGE);
+    if (currentPage > totalPages) currentPage = 1;
+
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    const sliced = filtered.slice(start, start + ROWS_PER_PAGE);
+
+    tableBody.innerHTML = "";
+
+    if (filtered.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">No products found</td></tr>`;
+    } else {
+      sliced.forEach((p, i) => {
+        tableBody.appendChild(createRow(p, start + i + 1));
+      });
+    }
+
+    renderPagination(totalPages);
+  }
+
+  // =====================================
+  // Pagination
+  // =====================================
+  function renderPagination(totalPages) {
+    pagination.innerHTML = "";
+
+    if (totalPages <= 1) return;
+
+    // Batas maksimum halaman angka yang ditampilkan
+    const maxNumbers = 2;
+
+    // Tentukan halaman awal dan akhir yang akan ditampilkan.
+    let startPage = currentPage;
+    let endPage = Math.min(totalPages, currentPage + maxNumbers - 1);
+
+    // Jika total halaman kurang dari 2, set endPage ke totalPages
+    if (totalPages <= maxNumbers) {
+      startPage = 1;
+      endPage = totalPages;
+    }
+
+    // Jika kita sudah di halaman terakhir atau sebelumnya, kita perlu memastikan
+    // kita menampilkan 2 angka terakhir jika memungkinkan.
+    if (currentPage > totalPages - (maxNumbers - 1)) {
+      startPage = Math.max(1, totalPages - (maxNumbers - 1));
+      endPage = totalPages;
+    }
+
+    // ----------------------------------------------------
+    // 1. Tombol PREV
+    // ----------------------------------------------------
+    if (currentPage > 1) {
+      const prev = document.createElement("button");
+      prev.className = "page-prev";
+      prev.innerHTML = `<i class="bi bi-chevron-left"></i> PREV`;
+      prev.onclick = () => {
+        currentPage--;
+        renderTable();
+      };
+      pagination.appendChild(prev);
+    }
+
+    // ----------------------------------------------------
+    // 2. Tampilkan Angka Halaman
+    // ----------------------------------------------------
+    for (let page = startPage; page <= endPage; page++) {
+      const btn = document.createElement("button");
+      btn.className = "page-number";
+      if (page === currentPage) btn.classList.add("active");
+      btn.textContent = page;
+      btn.onclick = () => {
+        currentPage = page;
+        renderTable();
+      };
+      pagination.appendChild(btn);
+    }
+
+    // ----------------------------------------------------
+    // 3. Tombol NEXT
+    // ----------------------------------------------------
+    if (currentPage < totalPages) {
+      const next = document.createElement("button");
+      next.className = "page-next";
+      next.innerHTML = `NEXT <i class="bi bi-chevron-right"></i>`;
+      next.onclick = () => {
+        currentPage++;
+        renderTable();
+      };
+      pagination.appendChild(next);
+    }
+  }
+
+  // =====================================
+  // Search
+  // =====================================
+  searchButton.onclick = () => {
+    currentPage = 1;
+    renderTable();
+  };
+  searchInput.oninput = () => {
+    currentPage = 1;
+    renderTable();
+  };
+  searchInput.onkeypress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      currentPage = 1;
+      renderTable();
+    }
+  };
+
+  // =====================================
+  // Delete Modal
+  // =====================================
+  let deleteProductId = null;
+
+  window.openDeleteModal = (id, name) => {
+    deleteProductId = id;
+    document.getElementById("deleteProductName").textContent = name;
+    document.querySelector(".delete-modal-overlay").classList.add("show");
+    document.querySelector(".delete-modal").classList.add("show");
+  };
+
+  window.closeDeleteModal = () => {
+    document.querySelector(".delete-modal-overlay").classList.remove("show");
+    document.querySelector(".delete-modal").classList.remove("show");
+  };
+
+  window.confirmDelete = () => {
+    if (deleteProductId) {
+      window.location.href = "/product/delete/" + deleteProductId;
+    }
+  };
+
+  renderTable();
+</script>

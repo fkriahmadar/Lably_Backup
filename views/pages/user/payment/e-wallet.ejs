@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="title">
+        <a href=""><i class="bi bi-chevron-left"></i></a>
+        <h2>E-Wallet Payment</h2>
+    </div>
+
+    <div class="text1">
+        <h2>Choose your E-Wallet</h2>
+        <p>Select your preferred e-wallet to complete the payment.</p>
+    </div>
+
+    <div class="cost">
+        <p>Total Payment</p>
+        <h2>Rp <%= Number(subtotal).toLocaleString('id-ID') %></h2>
+        <p><%= invoiceNumber %></p>
+    </div>
+
+    <div class="e-wallet">
+        <button class="dana options" data-wallet="Dana">
+            <img src="/Assets/dana.png" alt="Dana" width="45" height="45">
+            <p>Dana</p>
+            <i class="bi bi-chevron-right"></i>
+        </button>
+        <button class="shopeepay options" data-wallet="ShopeePay">
+            <img src="/Assets/shopeepay.png" alt="ShopeePay" width="45" height="45">
+            <p>ShopeePay</p>
+            <i class="bi bi-chevron-right"></i>
+        </button>
+        <button class="ovo options" data-wallet="OVO">
+            <img src="/Assets/ovo.png" alt="OVO" width="45" height="45">
+            <p>OVO</p>
+            <i class="bi bi-chevron-right"></i>
+        </button>
+        <button class="gopay options" data-wallet="Gopay">
+            <img src="/Assets/gopay.png" alt="Gopay" width="45" height="45">
+            <p>Gopay</p>
+            <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
+
+    <div class="text2">
+        <i class="bi bi-shield-fill-check"></i>
+        <p>Your payment is secure and protected. <br>We do not store your e-wallet details</p>
+    </div>
+
+    <div class="border"></div>
+    
+    <div class="button">
+        <button class="cancel">Cancel Payment</button>
+    </div>
+</div>

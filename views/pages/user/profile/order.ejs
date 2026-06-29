@@ -1,0 +1,105 @@
+<div class="main-content" id="main-content">
+  <% const reminders = orders.filter(
+    o => o.reminder_id && o.status !== "completed" );
+  %>
+
+  <nav class="navbar">
+    <div class="nav1">
+      <h2>My Orders</h2>
+      <p class="welcome">Here is the list of your orders</p>
+    </div>
+
+    <div class="nav2">
+      <div class="notif-wrapper <%= reminders.length > 0 ? 'has-reminder' : '' %>">
+        <i class="bi bi-bell-fill" id="notifBtn"></i>
+        <% if(reminders.length > 0){ %>
+          <span class="notif-badge">
+            <%= reminders.length %>
+          </span>
+        <% } %>
+        <div id="reminderPopup" class="reminder-popup">
+          <% reminders.forEach(r => { %>
+            <div class="popup-item">
+              <span class="popup-title">Reminder</span>
+              <p>Your loan for <strong><%= r.product_name %></strong> has been reminded by admin. Please return it as soon as possible.</p>
+            </div>
+          <% }) %>
+          <% if(reminders.length === 0){ %>
+            <div class="no-reminder">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>No reminders</span>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      <a href="/profile-customer" class="profile-section">
+        <img src="<%= user.pp_image || '/Assets/profile.jpg' %>" alt="Profile" class="profile-img"/>
+      </a>
+      <p class="username"><%= user.username %></p>
+    </div>
+  </nav>
+
+  <div class="top-section">
+    <div class="filters">
+      <button class="filter-btn active" id="filter-all">ALL ORDERS</button>
+      <button class="filter-btn inactive" id="filter-loaned">LOANED</button>
+      <button class="filter-btn inactive" id="filter-completed">
+        COMPLETED
+      </button>
+    </div>
+  </div>
+
+  <div class="order-card-list">
+    <% if (!orders || orders.length === 0) { %>
+    <p style="text-align: center; margin-top: 20px">No orders found.</p>
+    <% } else { %> <% orders.forEach(order => { %>
+
+    <div class="order-card" data-status="<%= 
+            order.status === 'pending' ? 'paid' : 
+            order.status === 'in use' ? 'in-use' :
+            order.status === 'overdue' ? 'overdue' :
+            order.status === 'completed' ? 'complete' : 'paid' %>" onclick="window.location.href='/order-detail/<%= order.id %>'" style="cursor: pointer;">
+      <div class="order-img-wrap">
+        <img
+          src="<%= order.product_image ? '/uploads/' + order.product_image : '/Assets/default.png' %>"
+          class="product-image"/>
+      </div>
+
+      <div class="order-details">
+        <div class="detail-item">
+          <span class="detail-label label-name">PRODUCT NAME :</span>
+          <span class="detail-value product-name"
+            ><%= order.product_name %></span>
+        </div>
+
+        <div class="detail-item quantity-wrap">
+          <span class="detail-label label-quantity">PRODUCT QUANTITY :</span>
+          <span class="detail-value quantity"><%= order.qty %>x</span>
+        </div>
+
+        <div class="detail-item detail-all-orders">
+          <span class="detail-label label-total">TOTAL PRICE :</span>
+          <span class="detail-value total"
+            >Rp<%= Number(order.price).toLocaleString() %></span>
+        </div>
+
+        <div class="detail-item detail-all-orders date-wrap">
+          <span class="detail-label label-date">DATE :</span>
+          <span class="detail-value date"
+            ><%= order.tgl_pinjam.replace(/-/g, '/') %> - <%= order.tgl_kembali.replace(/-/g, '/') %></span>
+        </div>
+      </div>
+
+      <div class="detail-item status-col">
+        <span class="detail-label">STATUS :</span>
+        <span
+          class="status-badge <%= order.status === 'pending' ? 'paid' : order.status === 'in use' ? 'in-use' : order.status === 'overdue' ? 'overdue' : order.status === 'completed' ? 'complete' : '' %>">
+          <%= order.status === 'pending' ? "Paid" : order.status === 'in use' ?
+          "In Use" : order.status === 'overdue' ? "Overdue" : order.status ===
+          'completed' ? "Returned" : "" %>
+        </span>
+      </div>
+    </div>
+    <% }) %> <% } %>
+  </div>
+</div>

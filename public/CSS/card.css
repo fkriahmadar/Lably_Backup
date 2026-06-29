@@ -1,0 +1,195 @@
+.card-root *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+.card-root{
+    background-color:transparent;
+    width:100%;
+}
+
+.card-root .container{
+    background-color:rgb(245,248,248);
+    width:340px;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+/* HEADER */
+
+.card-root .title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px;
+    border-bottom:1px solid #ddd;
+}
+
+.card-root .title a{
+    color:#0059ff;
+    text-decoration:none;
+    font-size:18px;
+}
+
+.card-root .title h2{
+    font-size:18px;
+    font-weight:700;
+    margin-right:auto;
+    margin-left:15px;
+}
+
+.card-root .title h2 .lab{
+    color:#2E7BEF;
+}
+
+.card-root .title h2 .ly{
+    color:#0B3B7A;
+}
+
+.card-root .title span{
+    font-size:14px;
+    font-weight:600;
+    color:#333;
+}
+
+/* AMOUNT */
+
+.card-root .cost{
+    padding:15px;
+    border-bottom:2px solid #0059ff;
+}
+
+.card-root .amount-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.card-root .amount-row p{
+    font-size:12px;
+    color:#555;
+}
+
+.card-root .amount-row h2{
+    color:#0059ff;
+    font-size:28px;
+    font-weight:700;
+}
+
+/* FORM */
+
+.card-root .card-form{
+    padding:15px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.card-root .card-form input{
+    height:48px;
+    border:1px solid #ddd;
+    padding:0 12px;
+    font-size:14px;
+    outline:none;
+}
+
+.card-root .card-form input:focus{
+    border-color:#0059ff;
+}
+
+/* PIN + CVV */
+
+.card-root .card-row{
+    display:flex;
+}
+
+.card-root .field{
+    flex:1;
+}
+
+.card-root .field input{
+    width:100%;
+}
+
+.card-root .field:first-child input{
+    border-right:none;
+}
+
+/* SECURE PAYMENT */
+
+.card-root .secure-payment{
+    margin:0 15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.card-root .secure-payment p{
+    font-size:12px;
+    font-weight:600;
+    color:#666;
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+.card-root .secure-payment img{
+    width:100%;
+    display:block;
+    padding:10px;
+    object-fit:contain;
+}
+
+/* CARD HOLDER */
+
+.card-root .cardholder-section{
+    padding:15px;
+}
+
+.card-root .cardholder-section label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    margin-bottom:8px;
+    color:#444;
+}
+
+.card-root .cardholder-section input{
+    width:100%;
+    height:48px;
+    border:1px solid #ddd;
+    padding:0 12px;
+    background:#ececec;
+}
+
+.card-root .invoice{
+    text-align:center;
+    font-size:11px;
+    color:#666;
+    padding-bottom:15px;
+}
+
+/* BUTTON */
+
+.card-root .button{
+    padding:0 15px 15px;
+}
+
+.card-root .button button{
+    width:100%;
+    height:50px;
+    border:none;
+    border-radius:10px;
+    background:#0059ff;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.card-root .button button:hover{
+    box-shadow:0 8px 20px rgba(0,89,255,.35);
+    transform:translateY(-1px);
+}

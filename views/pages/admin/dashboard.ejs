@@ -1,0 +1,149 @@
+<div class="dashboard-container">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <h2>Dashboard</h2>
+
+        <div class="top-icons">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-regular fa-envelope"></i>
+            <i class="fa-regular fa-bell"></i>
+            <img src="/Assets/profile.jpg" class="profile">
+        </div>
+    </div>
+
+    <!-- WELCOME CARD -->
+    <div class="welcome-card">
+        <div class="welcome-text">
+            <h3>Hallo <%= admin.username %>!</h3>
+            <p>Let’s create a structured data management experience</p>
+        </div>
+
+        <img src="/Assets/Mickroscope.png" class="welcome-img">
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats">
+
+    <div class="stat-box">
+        <div class="stat-left">
+            <div class="icon-circle blue">
+                <i class="bi bi-cart"></i>
+            </div>
+        </div>
+        <div class="stat-right">
+            <h2><%= productsCount %></h2>
+            <p>PRODUCTS</p>
+        </div>
+    </div>
+
+    <div class="stat-box">
+        <div class="stat-left">
+            <div class="icon-circle orange">
+                <i class="bi bi-people"></i>
+            </div>
+        </div>
+        <div class="stat-right">
+            <h2><%= customersCount %></h2>
+            <p>CUSTOMERS</p>
+        </div>
+    </div>
+
+    <div class="stat-box">
+        <div class="stat-left">
+            <div class="icon-circle purple">
+                <i class="bi bi-basket"></i>
+            </div>
+        </div>
+        <div class="stat-right">
+            <h2><%= ordersCount %></h2>
+            <p>ORDERS</p>
+        </div>
+    </div>
+
+</div>
+
+
+    <!-- MAIN CONTENT ROW -->
+    <div class="main-row">
+
+        <!-- CUSTOMER TABLE -->
+        <div class="table-card">
+            <h3>Data Customers</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Profile</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% customers.slice(0, 3).forEach(c => { %>
+                    <tr>
+                        <td>
+                            <img src="/Assets/profile.jpg" class="customer-img">
+                        </td>
+                        <td><%= c.email %></td>
+                        <td>User</td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CALENDAR -->
+        <div class="calendar-card">
+
+            <h3>
+                <%= today.toLocaleString('default', { month: 'long' }) %>
+                <%= today.getFullYear() %>
+            </h3>
+
+            <!-- DAY HEADERS -->
+            <div class="calendar-days-header">
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+                <div>Sun</div>
+            </div>
+
+            <div class="calendar-grid">
+
+                <% 
+                    const year = today.getFullYear();
+                    const month = today.getMonth();
+
+                    // Hari pertama bulan (0 = Minggu)
+                    const firstDay = new Date(year, month, 1).getDay();
+
+                    // Konversi agar Senin jadi kolom pertama
+                    const startDay = firstDay === 0 ? 7 : firstDay;
+
+                    // Total hari dalam bulan
+                    const totalDays = new Date(year, month + 1, 0).getDate();
+                %>
+
+                <!-- EMPTY SLOTS (padding sebelum tanggal 1) -->
+                <% for (let i = 1; i < startDay; i++) { %>
+                    <div class="calendar-day empty"></div>
+                <% } %>
+
+                <!-- GENERATE TANGGAL -->
+                <% for (let d = 1; d <= totalDays; d++) { %>
+                    <div class="calendar-day <%= d === today.getDate() ? 'active' : '' %>">
+                        <%= d %>
+                    </div>
+                <% } %>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

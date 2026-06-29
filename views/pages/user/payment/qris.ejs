@@ -1,0 +1,62 @@
+<div id="qris-section" class="qris-section qris-root">
+    <div class="container">
+    <div class="title">
+        <a href=""><i class="bi bi-chevron-left"></i></a>
+        <h2>QRIS Payment</h2>
+    </div>
+
+    <div class="warning">
+        <p>Finish your payment now</p>
+    </div>
+
+    <div class="cost">
+    <p>Total Payment</p>
+    <h2>Rp <%= Number(subtotal).toLocaleString('id-ID') %></h2>
+    <p><%= invoiceNumber %></p>
+    </div>
+
+    <div class="text">
+        <p>Please scan the following QR Code using your e-wallet or mobile banking app.</p>
+    </div>
+
+    <div class="QR-code" id="qris-qrcode">
+        <span class="corner top-left"></span>
+        <span class="corner top-right"></span>
+        <span class="corner bottom-left"></span>
+        <span class="corner bottom-right"></span>
+    </div>
+
+    <div class="QRIS-logo">
+        <img src="/assets/QRIS_Logo.svg" alt="">
+        <div class="QRIS-logo-text">
+            <p>QR Code Standar <br>Pembayaran Nasional</p>
+        </div>
+    </div>
+
+    <div class="border"></div>
+
+    <div class="button">
+        <button id="qris-paid-btn" type="button">I already paid</button>
+    </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const qrcodeElement = document.getElementById('qris-qrcode');
+    if (!qrcodeElement) return;
+
+    const existingQr = qrcodeElement.querySelector('img, canvas');
+    if (existingQr) return;
+
+    new QRCode(qrcodeElement, {
+      text: '00020101021126670016COM.NOBUBANK.WWW01189360050300000879140214INVOICE2064775204541153033605802ID5910MyMerchant6007Jakarta6105123456304ABCD',
+      width: 160,
+      height: 160,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+  });
+</script>

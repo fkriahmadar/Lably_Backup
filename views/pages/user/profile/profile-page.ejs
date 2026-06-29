@@ -1,0 +1,626 @@
+<!-- profile-page.ejs -->
+
+<div class="profile-content">
+  <!-- HEADER -->
+  <div class="profile-header">
+    <h1>Profile</h1>
+    <p>Manage your account information</p>
+  </div>
+
+  <div class="profile-body">
+    <!-- KIRI: Informasi Pribadi -->
+    <div class="profile-card info-card">
+      <div class="card-title">
+        <h2>Personal Information</h2>
+        <p>Update your personal information</p>
+      </div>
+
+      <form action="/profile-customer/update" method="POST">
+        <!-- Hidden: email agar tidak terhapus di DB -->
+        <input type="hidden" name="email" value="<%= user.email %>" />
+
+        <div class="form-group">
+          <label for="nama">Full Name</label>
+          <input
+            type="text"
+            id="nama"
+            name="username"
+            placeholder="Enter your fullname"
+            value="<%= user.username %>"
+            readonly
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="text" id="phoneDisplay" readonly />
+          <input type="tel" id="phone" name="phone"
+            placeholder="Enter your phone number"
+            value="<%= user.phone || '' %>" />
+          <input type="hidden" id="fullPhone" name="fullPhone" />
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" name="address"
+            placeholder="Enter your address"
+            value="<%= user.address || '' %>" readonly />
+        </div>
+
+        <div class="form-buttons">
+          <button type="button" class="btn-edit" id="btnEdit">
+            Edit Profile
+          </button>
+          <button
+            type="submit"
+            class="btn-save"
+            id="btnSave"
+            style="display: none"
+          >
+            Save Changes
+          </button>
+          <button
+            type="button"
+            class="btn-cancel"
+            id="btnCancel"
+            style="display: none"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- KANAN: Avatar + Keamanan Akun -->
+    <div class="profile-side">
+      <!-- Avatar Card -->
+      <div class="profile-card avatar-card">
+        <div class="avatar-wrap">
+          <img src="<%= user.pp_image || '/Assets/profile.jpg' %>" alt="Avatar" class="avatar-img"/>
+          <button class="avatar-edit-btn" type="button" id="btnChangePhoto" >
+            <i class="bi bi-camera"></i>
+          </button>
+        </div>
+        <h3><%= user.username %></h3>
+        <p>Member Since <%= user.created_at ? new Date(user.created_at).getFullYear() : '-' %></p>
+      </div>
+
+      <!-- Keamanan Akun Card -->
+      <div class="profile-card security-card">
+        <div class="card-title">
+          <h2>Account Security</h2>
+          <p>Manage your account security.</p>
+        </div>
+
+        <ul class="security-list">
+          <li id="changeEmailBtn">
+            <div class="security-item">
+              <i class="bi bi-envelope-at"></i>
+              <div>
+                <span class="security-label">Email</span>
+                <span class="security-desc"><%=
+                  (() => {
+                    const e = user.email;
+                    const [local, domain] = e.split('@');
+                    const visible = local.slice(0, 3);
+                    const masked = visible + '*'.repeat(Math.max(local.length - 3, 2)) + '@' + domain;
+                    return masked;
+                  })()
+                %></span>
+              </div>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </li>
+          <li id="changePasswordBtn">
+            <div class="security-item">
+              <i class="bi bi-lock"></i>
+              <div>
+                <span class="security-label">Change Password</span>
+                <span class="security-desc">Update your account password</span>
+              </div>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERIFIKASI -->
+  <div class="profile-card help-card <% if(user.ktp_status === 'verified') { %>verified<% } else if(user.ktp_status === 'rejected') { %>rejected<% } else if(user.ktp_status === 'pending') { %>pending<% } %>">
+    <div class="help-icon">
+      <% if(user.ktp_status === 'verified') { %>
+        <i class="bi bi-check-circle"></i>
+      <% } else if(user.ktp_status === 'rejected') { %>
+        <i class="bi bi-x-circle"></i>
+      <% } else { %>
+        <i class="bi bi-exclamation-circle"></i>
+      <% } %>
+    </div>
+    <div class="help-text">
+      <% if(user.ktp_status === 'verified') { %>
+        <h4>Identity Verified</h4>
+        <p>Your account has been successfully verified.</p>
+      <% } else if(user.ktp_status === 'pending') { %>
+        <h4>Identity Pending</h4>
+        <p>Your identity card is being reviewed by the admin. Please wait.</p>
+      <% } else if(user.ktp_status === 'rejected') { %>
+        <h4>Identity Rejected</h4>
+        <p>Your identity card is rejected. Please upload a valid document.</p>
+      <% } else { %>
+        <h4>Identity Verification</h4>
+        <p>Upload your identity card for further identity verification.</p>
+      <% } %>
+    </div>
+
+    <% if(user.ktp_status === 'unverified') { %>
+      <button type="button" class="btn-support" id="btnVerifikasi">Identity Verification</button>
+    <% } else if(user.ktp_status === 'pending') { %>
+      <button type="button" class="btn-support btn-pending" disabled>Pending</button>
+    <% } else if(user.ktp_status === 'rejected') { %>
+      <button type="button" class="btn-support btn-rejected" id="btnVerifikasi">Upload Again</button>
+    <% } %>
+  </div>
+
+  <!-- MODAL KTP -->
+  <div class="ktp-modal-overlay" id="ktpModalOverlay">
+    <div class="ktp-modal">
+      <div class="ktp-modal-header">
+        <div class="ktp-modal-icon">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <div>
+          <h3>Identity Verification</h3>
+          <p>Upload your identity card for further identity verification. The review process is done manually by the admin.</p>
+          <span class="badge-pending"><i class="bi bi-clock"></i> Unverified</span>
+        </div>
+      </div>
+
+      <form action="/profile-customer/upload-ktp" method="POST" enctype="multipart/form-data">
+        <div class="ktp-dropzone" id="ktpDropzone">
+          <input type="file" id="ktpFile" name="ktp_image" accept=".jpg,.jpeg,.png,.pdf" hidden />
+          <i class="bi bi-upload"></i>
+          <p>Click or drag your identity card photo here</p>
+          <span>Format: JPG, PNG, PDF · Maks. 5 MB</span>
+        </div>
+        <p class="ktp-note"><i class="bi bi-shield-lock"></i> Your data will only be accessed by verified admins.</p>
+        <div class="ktp-modal-actions">
+          <button type="button" class="btn-cancel-modal" id="btnCancelModal">Cancel</button>
+          <button type="submit" class="btn-kirim"><i class="bi bi-send"></i> Send for Verification</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="ktp-modal-overlay" id="photoModal">
+  <div class="ktp-modal">
+
+    <div class="ktp-modal-header">
+      <div class="ktp-modal-icon">
+        <i class="bi bi-image"></i>
+      </div>
+
+      <div>
+        <h3>Change Profile Picture</h3>
+        <p>Upload a new profile picture.</p>
+      </div>
+    </div>
+
+    <form
+      action="/profile-customer/change-photo"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+
+      <div class="ktp-dropzone" id="photoDropzone">
+
+        <input
+          type="file"
+          id="profileImage"
+          name="profile_image"
+          accept=".jpg,.jpeg,.png"
+          hidden
+        >
+
+        <i class="bi bi-upload"></i>
+        <p>Click to upload photo</p>
+
+      </div>
+
+      <div class="ktp-modal-actions">
+
+        <button
+          type="button"
+          class="btn-cancel-modal"
+          id="closePhotoModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn-kirim"
+        >
+          Save Photo
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<div class="ktp-modal-overlay" id="passwordModal">
+
+  <div class="ktp-modal">
+
+    <div class="ktp-modal-header">
+      <div class="ktp-modal-icon">
+        <i class="bi bi-lock"></i>
+      </div>
+
+      <div>
+        <h3>Change Password</h3>
+        <p>Update your account password.</p>
+      </div>
+    </div>
+
+    <form
+      action="/profile-customer/change-password"
+      method="POST"
+    >
+
+      <div class="form-group-pass">
+        <label>Current Password</label>
+        <input
+          type="password"
+          name="oldPassword"
+          placeholder="Enter current password"
+          required
+        >
+      </div>
+
+      <div class="form-group-pass">
+        <label>New Password</label>
+        <input
+          type="password"
+          name="newPassword"
+          placeholder="Enter new password"
+          required
+        >
+      </div>
+
+      <div class="form-group-pass new-pass">
+        <label>Confirm New Password</label>
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm new password"
+          required
+        >
+      </div>
+
+      <div class="ktp-modal-actions">
+
+        <button
+          type="button"
+          class="btn-cancel-modal"
+          id="closePasswordModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn-kirim"
+        >
+          Update Password
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+</div>
+
+<!-- Modal Change Email -->
+<div class="ktp-modal-overlay" id="emailModal">
+
+  <div class="ktp-modal">
+
+    <div class="ktp-modal-header">
+      <div class="ktp-modal-icon">
+        <i class="bi bi-envelope-at"></i>
+      </div>
+
+      <div>
+        <h3>Change Email</h3>
+        <p>Update your account email address.</p>
+      </div>
+    </div>
+
+    <form
+      action="/profile-customer/change-email"
+      method="POST"
+    >
+
+      <div class="form-group-pass">
+        <label>Current Email</label>
+        <input
+          type="email"
+          name="currentEmail"
+          placeholder="Enter your current email"
+          required
+        >
+      </div>
+
+      <div class="form-group-pass">
+        <label>New Email</label>
+        <input
+          type="email"
+          name="newEmail"
+          placeholder="Enter new email address"
+          required
+        >
+      </div>
+
+      <div class="form-group-pass new-pass">
+        <label>Confirm New Email</label>
+        <input
+          type="email"
+          name="confirmEmail"
+          placeholder="Confirm new email address"
+          required
+        >
+      </div>
+
+      <div class="ktp-modal-actions">
+
+        <button
+          type="button"
+          class="btn-cancel-modal"
+          id="closeEmailModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn-kirim"
+        >
+          Update Email
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<script>
+  const originalPhone = "<%= user.phone || '' %>";
+  const btnEdit = document.getElementById("btnEdit");
+  const btnSave = document.getElementById("btnSave");
+  const btnCancel = document.getElementById("btnCancel");
+  const inputs = document.querySelectorAll(".info-card input");
+  const originalValues = {};
+  const btnVerifikasi = document.getElementById('btnVerifikasi');
+  const ktpModalOverlay = document.getElementById('ktpModalOverlay');
+  const btnCancelModal = document.getElementById('btnCancelModal');
+  const ktpDropzone = document.getElementById('ktpDropzone');
+  const ktpFile = document.getElementById('ktpFile');
+  let iti;
+
+  // === EDIT PROFILE ===
+  btnEdit.addEventListener("click", () => {
+    inputs.forEach((input) => {
+      originalValues[input.id] = input.value;
+      input.removeAttribute("readonly");
+    });
+
+    document.getElementById("phoneDisplay").style.display = "none";
+    document.getElementById("phone").style.display = "block";
+
+    const itiWrapper = document.querySelector(".iti");
+    if (itiWrapper) itiWrapper.style.display = "block";
+    
+    setTimeout(() => {
+      if (iti && originalPhone) iti.setNumber(originalPhone);
+    }, 50);
+
+    btnEdit.style.display = "none";
+    btnSave.style.display = "block";
+    btnCancel.style.display = "block";
+  });
+
+  // === CANCEL EDIT ===
+  btnCancel.addEventListener("click", () => {
+    inputs.forEach((input) => {
+      input.value = originalValues[input.id];
+      input.setAttribute("readonly", true);
+    });
+
+    document.getElementById("phoneDisplay").style.display = "block";
+    document.getElementById("phone").style.display = "none";
+    document.getElementById("phoneDisplay").value = formatDisplayPhone(originalPhone);
+
+    const itiWrapper = document.querySelector(".iti");
+    if (itiWrapper) itiWrapper.style.display = "none";
+    if (iti && originalPhone) iti.setNumber(originalPhone);
+
+    btnEdit.style.display = "block";
+    btnSave.style.display = "none";
+    btnCancel.style.display = "none";
+  });
+
+  // === VERIFIKASI KTP ===
+  if (btnVerifikasi) {
+    btnVerifikasi.addEventListener('click', () => {
+      const phone = '<%= user.phone || "" %>';
+      if (!phone) {
+        showPopup('Please complete your personal data first before verification.');
+        return;
+      }
+      ktpModalOverlay.classList.add('show');
+    });
+  }
+
+  if (btnCancelModal) {
+    btnCancelModal.addEventListener('click', () => ktpModalOverlay.classList.remove('show'));
+  }
+
+  if (ktpDropzone) {
+    ktpDropzone.addEventListener('click', () => ktpFile.click());
+    ktpFile.addEventListener('change', () => {
+      if (ktpFile.files[0]) ktpDropzone.querySelector('p').textContent = ktpFile.files[0].name;
+    });
+  }
+
+  // === GANTI FOTO ===
+  const btnChangePhoto = document.getElementById("btnChangePhoto");
+  const photoModal = document.getElementById("photoModal");
+  const closePhotoModal = document.getElementById("closePhotoModal");
+  const photoDropzone = document.getElementById("photoDropzone");
+  const profileImage = document.getElementById("profileImage");
+
+  if (btnChangePhoto) btnChangePhoto.addEventListener("click", () => photoModal.classList.add("show"));
+  if (closePhotoModal) closePhotoModal.addEventListener("click", () => photoModal.classList.remove("show"));
+  if (photoDropzone) photoDropzone.addEventListener("click", () => profileImage.click());
+  if (profileImage) {
+    profileImage.addEventListener("change", () => {
+      if (profileImage.files[0]) photoDropzone.querySelector("p").textContent = profileImage.files[0].name;
+    });
+  }
+
+  // === GANTI PASSWORD ===
+  const changePasswordBtn = document.getElementById("changePasswordBtn");
+  const passwordModal = document.getElementById("passwordModal");
+  const closePasswordModal = document.getElementById("closePasswordModal");
+
+  if (changePasswordBtn) changePasswordBtn.addEventListener("click", () => passwordModal.classList.add("show"));
+  if (closePasswordModal) closePasswordModal.addEventListener("click", () => passwordModal.classList.remove("show"));
+
+  // === GANTI EMAIL ===
+  const changeEmailBtn = document.getElementById("changeEmailBtn");
+  const emailModal = document.getElementById("emailModal");
+  const closeEmailModal = document.getElementById("closeEmailModal");
+
+  if (changeEmailBtn) changeEmailBtn.addEventListener("click", () => emailModal.classList.add("show"));
+  if (closeEmailModal) closeEmailModal.addEventListener("click", () => emailModal.classList.remove("show"));
+
+  // === LOAD ===
+  window.addEventListener("load", () => {
+    document.getElementById("phoneDisplay").value = formatDisplayPhone(originalPhone);
+
+    const phoneInput = document.querySelector("#phone");
+    if (phoneInput && typeof window.intlTelInput !== "undefined") {
+      iti = window.intlTelInput(phoneInput, {
+        initialCountry: "id",
+        preferredCountries: ["id", "sg", "my", "us", "jp"],
+        separateDialCode: true,
+        loadUtilsOnInit: "https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/utils.js"
+      });
+
+      setTimeout(() => {
+        const itiWrapper = document.querySelector(".iti");
+        if (itiWrapper) itiWrapper.style.display = "none";
+      }, 50);
+    }
+  });
+
+  // === HELPER: ambil nomor lengkap dari iti ===
+  function getFullPhoneNumber() {
+    if (!iti) return "";
+
+    // Coba getNumber() dulu (butuh utils script)
+    let num = "";
+    try {
+      num = iti.getNumber();
+    } catch (e) {
+      num = "";
+    }
+
+    // Fallback: jika getNumber() gagal atau hanya return dial code,
+    // konstruksi manual dari dial code + input value
+    if (!num || num === "+" || /^\+\d{1,3}$/.test(num)) {
+      const phoneInput = document.getElementById("phone");
+      const inputVal = phoneInput ? phoneInput.value.replace(/\D/g, "") : "";
+      if (inputVal) {
+        const selectedData = iti.getSelectedCountryData();
+        const dialCode = selectedData ? selectedData.dialCode : "";
+        num = "+" + dialCode + inputVal;
+      }
+    }
+
+    return num;
+  }
+
+  // === SHOW POPUP ===
+  function showPopup(message, type = "error") {
+    const popup = document.createElement("div");
+    popup.className = `popup ${type}`;
+    popup.textContent = message;
+    document.querySelector(".profile-content").appendChild(popup);
+    setTimeout(() => popup.remove(), 3000);
+  }
+
+  // === FORM SUBMIT VALIDASI ===
+  const profileForm = document.querySelector('form[action="/profile-customer/update"]');
+
+  if (profileForm) {
+    profileForm.addEventListener("submit", (e) => {
+      const nama = document.getElementById("nama").value.trim();
+      const address = document.getElementById("address").value.trim();
+      
+      let fullPhoneVal = getFullPhoneNumber();
+      if (!fullPhoneVal || fullPhoneVal === "+") {
+        fullPhoneVal = originalPhone;
+      }
+
+      if (!nama) {
+        e.preventDefault();
+        showPopup("Full Name is required.");
+        return;
+      }
+
+      if (!address) {
+        e.preventDefault();
+        showPopup("Address is required.");
+        return;
+      }
+
+      if (!fullPhoneVal) {
+        e.preventDefault();
+        showPopup("Phone Number is required.");
+        return;
+      }
+
+      // set fullPhone ke hidden input sebelum submit
+      document.getElementById("fullPhone").value = fullPhoneVal;
+    });
+  }
+
+  // === FORMAT DISPLAY PHONE ===
+  function formatDisplayPhone(phone) {
+    if (!phone) return "";
+    const clean = phone.replace(/\D/g, "");
+    let countryCode = "";
+    let number = "";
+
+    if (clean.startsWith("62")) {
+      countryCode = "62";
+      number = clean.substring(2);
+    } else {
+      countryCode = clean.substring(0, 3);
+      number = clean.substring(3);
+    }
+
+    return "+" + countryCode + " " + number.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+  }
+</script>

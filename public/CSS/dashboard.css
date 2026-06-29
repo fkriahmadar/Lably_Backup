@@ -1,0 +1,266 @@
+/* ================================
+   GLOBAL RESET (AMAN)
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ================================
+   LAYOUT GRID (SIDEBAR + CONTENT)
+================================ */
+.container {
+  display: grid;
+  height: 100vh;
+  grid-template-areas: "left right";
+  grid-template-columns: 1fr 4fr;
+  background: #f8f9ff;
+}
+
+/* ================================
+   DASHBOARD CONTENT WRAPPER
+================================ */
+.right {
+  grid-area: right;
+  padding: 35px;
+  overflow-y: auto;
+}
+
+/* ============================================
+        TOP BAR 
+============================================ */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.topbar h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.top-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.top-icons i {
+  font-size: 20px;
+  color: #6e6e6e;
+}
+
+.top-icons img.profile {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+/* ============================================
+        WELCOME CARD 
+============================================ */
+.welcome-card {
+  background: linear-gradient(90deg, #49a8ff, #6cd1ff);
+  color: white;
+  border-radius: 25px;
+  padding: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.welcome-card h3 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.welcome-card p {
+  font-size: 40px;
+  opacity: 0.95;
+}
+
+.welcome-card .welcome-img {
+  width: 150px;
+  object-fit: contain;
+}
+
+/* ============================================
+        STATS BOX 
+============================================ */
+.stats {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.stat-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 25px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* ICON LEFT */
+.stat-left {
+  display: flex;
+  align-items: center;
+}
+
+/* ICON CIRCLE */
+.icon-circle {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.icon-circle i {
+  font-size: 26px;
+}
+
+/* ICON COLORS */
+.icon-circle.blue i {
+  color: #1477ff;
+}
+
+.icon-circle.orange i {
+  color: #ff9f2a;
+}
+
+.icon-circle.purple i {
+  color: #6f87ff;
+}
+
+/* TEXT RIGHT */
+.stat-right h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0b66ff;
+  margin: 0;
+}
+
+.stat-right p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0c4db2;
+  margin-top: -5px;
+}
+
+/* ============================================
+        MAIN CONTENT ROW
+============================================ */
+.main-row {
+  display: flex;
+  gap: 25px;
+}
+
+/* ============================================
+        CUSTOMER TABLE 
+============================================ */
+.table-card {
+  flex: 2;
+  background: white;
+  border-radius: 22px;
+  padding: 25px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.table-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.table-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-card th {
+  text-align: left;
+  font-size: 14px;
+  color: #777;
+  padding-bottom: 15px;
+}
+
+.table-card td {
+  padding: 15px 0;
+  border-bottom: 1px solid #efefef;
+}
+
+.customer-img,
+.cust-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ============================================
+        CALENDAR 
+============================================ */
+.calendar-card {
+  flex: 1;
+  background: white;
+  border-radius: 22px;
+  padding: 25px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.calendar-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+/* MON–SUN HEADER */
+.calendar-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  color: #4f5f7a;
+  margin-bottom: 10px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.calendar-day {
+  background: #eef3ff;
+  text-align: center;
+  padding: 12px 0;
+  border-radius: 12px;
+  color: #4f5f7a;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.calendar-day.active {
+  background: #2b79ff;
+  color: white;
+  font-weight: 700;
+}
+
+.calendar-day.empty {
+  background: transparent;
+  box-shadow: none;
+}

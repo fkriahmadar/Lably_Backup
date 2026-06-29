@@ -1,0 +1,234 @@
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container hero-content">
+    <div class="hero-text">
+      <h1>Kami Hadir Untuk Membantu Penelitianmu</h1>
+      <p>
+        Solusi akses peralatan riset terbaik tanpa komitmen investasi permanen.
+        Kami menyediakan instrumen laboratorium terbaik, memastikan dukungan
+        efisien dan terjamin untuk setiap proyek ilmiah dan pengembangan produk
+        Anda.
+      </p>
+      <a href="/catalogue" class="btn btn-primary">
+        Pinjam Sekarang
+        <i class="bi bi-arrow-right-circle-fill"></i>
+      </a>
+    </div>
+    <div class="hero-image">
+      <img src="./Assets/Mickroscope.png" alt="Mikroscope" />
+    </div>
+  </div>
+</section>
+
+<!-- Why Section -->
+<section class="why-section">
+  <div class="container why-container">
+    <div class="wrap">
+      <i class="bi bi-beaker"></i>
+      <h3>Alat Terjamin Mutu</h3>
+    </div>
+    <div class="wrap">
+      <i class="bi bi-lightning"></i>
+      <h3>Proses Digital & Cepat</h3>
+    </div>
+    <div class="wrap">
+      <i class="bi bi-people"></i>
+      <h3>Layanan Private Terbaik</h3>
+    </div>
+  </div>
+</section>
+
+<!-- Catalogue Section -->
+<section>
+  <div class="container catalogue-content">
+    <div class="type-product-wrap">
+      <div class="type-product-box">
+        <div class="type-product-img">
+          <img src="./Assets/Incubator-CO2.png" alt="Incubator CO2" />
+        </div>
+        <div class="type-product-content">
+          <p>Type</p>
+          <h3>Biologi & Ilmu Hayati</h3>
+          <a href="/catalogue">See More</a>
+        </div>
+      </div>
+      <div class="type-product-box">
+        <div class="type-product-img">
+          <img src="./Assets/Spektrofotom.png" alt="Spektrofotom" />
+        </div>
+        <div class="type-product-content">
+          <p>Type</p>
+          <h3>Kimia & Ilmu Material</h3>
+          <a href="/catalogue">See More</a>
+        </div>
+      </div>
+    </div>
+
+    <h1>Catalogue</h1>
+
+    <div class="catalogue-filter">
+      <div class="filter">
+        <button id="filter-availability" class="filter-btn active">
+          Availability
+        </button>
+        <button id="filter-best" class="filter-btn active">Best Items</button>
+      </div>
+      <a href="/catalogue">See More</a>
+    </div>
+
+    <div class="catalogue-grid">
+      <% catalogue.forEach(item => { %>
+      <a href="/product/<%= item.id %>">
+        <div class="catalogue-item">
+          <div class="item-img">
+            <img src="<%= item.img %>" alt="<%= item.name %>" />
+          </div>
+
+          <p class="item-name"><%= item.name %></p>
+          <p class="item-price">IDR <%= item.price.toLocaleString() %></p>
+
+          <% if (item.stock > 0) { %>
+          <p class="item-availability available">Available</p>
+          <% } else { %>
+          <p class="item-availability out">Out of Stock</p>
+          <% } %>
+        </div>
+      </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- Pro Section -->
+<section class="pro-section">
+  <div class="container pro-content">
+    <h1>Riset Canggih, Akses Mudah</h1>
+    <div class="pro-images">
+      <img src="./Assets/double-photo.png" alt="Chemistry" />
+    </div>
+    <div class="pro-text">
+      <p>
+        Akses cepat untuk instrumen lab terbaik dan mendorong penelitian serta
+        penemuan dengan biaya investasi yang terbatas.
+      </p>
+      <a href="/catalogue" class="btn btn-primary">
+        Catalog Kami
+        <i class="bi bi-arrow-right-circle-fill"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Advantage Section -->
+<section class="advantage-section">
+  <div class="container reason-content">
+    <h2>Langkah Mudah Untuk Peminjaman Alat Riset</h2>
+    <p>
+      Solusi cepat dan terpercaya untuk mendapatkan instrumen penelitian yang
+      Anda butuhkan.
+    </p>
+
+    <div class="reason-card-wrap">
+      <div class="reason-card">
+        <div class="reason-icon"><i class="bi bi-cash-stack"></i></div>
+        <h3>Efisiensi Biaya Untuk Riset</h3>
+        <p>
+          Bayar seperlunya, maksimalkan anggaran riset Anda tanpa perlu
+          mengeluarkan banyak biaya.
+        </p>
+      </div>
+      <div class="reason-card">
+        <div class="reason-icon"><i class="bi bi-arrow-repeat"></i></div>
+        <h3>Fleksibilitas Durasi Sewa</h3>
+        <p>
+          Pilihan sewa harian, mingguan, hingga bulanan. Sesuaikan kebutuhan
+          spesifik penelitian.
+        </p>
+      </div>
+      <div class="reason-card">
+        <div class="reason-icon"><i class="bi bi-lightbulb-fill"></i></div>
+        <h3>Akses Pengetahuan Ahli</h3>
+        <p>
+          Dapatkan panduan penggunaan dan troubleshooting langsung dari teknisi
+          bersertifikat kami.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container banner-section">
+    <div class="banner-image">
+      <img src="./Assets/Banner.jpg" alt="" />
+    </div>
+    <div class="banner-content">
+      <h3>Kami Hadir Untuk Membantu Penelitianmu</h3>
+      <p>
+        Kami hadir sebagai mitra terpercaya Anda untuk mengatasi hambatan
+        investasi alat. Dapatkan akses ke instrumen laboratorium terbaik, tanpa
+        perlu komitmen modal yang berat. Kami menyediakan platform yang
+        sederhana dan efisien, sehingga Anda bisa sepenuhnya mendedikasikan
+        waktu Anda untuk penemuan ilmiah.
+      </p>
+      <a href="#footer" class="btn btn-primary">
+        Hubungi Kami
+        <i class="bi bi-arrow-right-circle-fill"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const grid = document.querySelector(".catalogue-grid");
+  const bestBtn = document.getElementById("filter-best");
+  const availBtn = document.getElementById("filter-availability");
+
+  function renderProducts(items) {
+    grid.innerHTML = "";
+    items.forEach((item) => {
+      grid.innerHTML += `
+        <a href="/product/${item.id}">
+          <div class="catalogue-item">
+            <div class="item-img">
+              <img src="${item.img}" alt="${item.name}" />
+            </div>
+
+            <p class="item-name">${item.name}</p>
+            <p class="item-price">IDR ${Number(item.price).toLocaleString()}</p>
+
+            ${
+              item.stock > 0
+                ? `<span class="item-availability available">Available</span>`
+                : `<span class="item-availability out">Out of Stock</span>`
+            }
+          </div>
+        </a>
+      `;
+    });
+  }
+
+  function activate(btn) {
+    bestBtn.classList.remove("active");
+    availBtn.classList.remove("active");
+    btn.classList.add("active");
+  }
+
+  // DEFAULT → Availability Active
+  activate(availBtn);
+  fetch("/api/availability")
+    .then((res) => res.json())
+    .then((data) => renderProducts(data));
+
+  bestBtn.addEventListener("click", () => {
+    activate(bestBtn);
+    fetch("/api/best-items")
+      .then((res) => res.json())
+      .then((data) => renderProducts(data));
+  });
+
+  availBtn.addEventListener("click", () => {
+    activate(availBtn);
+    fetch("/api/availability")
+      .then((res) => res.json())
+      .then((data) => renderProducts(data));
+  });
+</script>

@@ -1,65 +1,56 @@
 const express = require("express");
 const session = require("express-session");
 const app = express();
-const ejs = require("ejs");
 const path = require("path");
+const routes = require("./routes/index");
+const User = require("./models/userModel");
+const Customer = require("./models/customerModel");
+const { passLoginStatus } = require("./middlewares/authMiddleware");
 
 // ==========================
-// 1. Middleware penting
+// 1. Middleware
 // ==========================
 
-// Untuk membaca data POST dari form
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Session
-app.use(session({
+app.use(
+  session({
     secret: "lably-secret-key",
-    resave: false,
-    saveUninitialized: true
-}));
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
-// Public folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// Set EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+app.use(passLoginStatus);
 
 // ==========================
-// 2. PAGE HOME
+// 2. ROUTER
 // ==========================
 
-app.get("/", async (req, res) => {
-    const content = await ejs.renderFile(
-        path.join(__dirname, "views/pages/home.ejs"),
-        {}
-    );
-
-    res.render("layouts/main", {
-        title: "Home | Lably",
-        showFooter: true,
-        meta: `
-            <meta name="description" content="LabLy: Solusi alat riset & laboratorium." />
-        `,
-        style: `<link rel="stylesheet" href="/CSS/home.css" />`,
-        content,
-    });
-});
-
-
-// ==========================
-// 3. ROUTES AUTENTIKASI (LOGIN, REGISTER)
-// ==========================
-
-const routes = require("./routes/index");
 app.use("/", routes);
 
+// ==========================
+// 3. CRON / CEK USER INACTIVE
+// ==========================
+
+setInterval(() => {
+  console.log("=== CEK USER INACTIVE ===");
+  User.deactivateInactive((err, result) => {
+    if (err) return console.log("ERROR:", err);
+    console.log("HASIL UPDATE:", result);
+  });
+}, 60 * 1000);
 
 // ==========================
-// 4. Jalankan Server
+// 4. Server
 // ==========================
 
 app.listen(3000, () => {
-    console.log("Server running at http://localhost:3000");
+  console.log("Server running at http://localhost:3000");
 });

@@ -1,0 +1,52 @@
+<div class="container">
+    <div class="title">
+        <a href=""><i class="bi bi-chevron-left"></i></a>
+        <h2>E-Wallet Payment</h2>
+    </div>
+
+    <div class="text1">
+        <h2>Finish your payment now</h2>
+        <p>open your e-wallet and complete the payment</p>
+    </div>
+
+    <div class="cost">
+        <p>Total Payment</p>
+        <h2>Rp <%= Number(subtotal).toLocaleString('id-ID') %></h2>
+        <p><%= invoiceNumber %></p>
+    </div>
+
+    <div class="text">
+        <p>Please scan the following QR Code using your e-wallet or mobile banking app.</p>
+    </div>
+
+    <div class="QR-code">
+        <div id="ewallet-qrcode"></div>
+        <img id="ewallet-qr-logo" src="/Assets/dana.png" alt="E-Wallet Logo" class="logo-dana">
+        <span class="corner top-left"></span>
+        <span class="corner top-right"></span>
+        <span class="corner bottom-left"></span>
+        <span class="corner bottom-right"></span>
+    </div>
+
+    <div class="text2">
+        <i class="bi bi-shield-fill-check"></i>
+        <p>Your payment is secure and protected. <br>We do not store your e-wallet details</p>
+    </div>
+
+    <div class="border"></div>
+    
+    <div class="button">
+        <button class="finish">I already paid</button>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+    new QRCode(document.getElementById("ewallet-qrcode"), {
+        text: "00020101021126670016COM.NOBUBANKWWW01189360050300000879140214INVOICE2064775204541153033605802ID5910MyMerchant6007Jakarta610513456304ABCD",
+        width: 160,
+        height: 160,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+</script>

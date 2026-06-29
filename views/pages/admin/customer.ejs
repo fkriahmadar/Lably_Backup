@@ -1,0 +1,113 @@
+<nav class="navbar">
+    <span>Customers</span>
+    <img src="/Assets/profile.jpg" alt="">
+</nav>
+
+<div class="filter">
+    <div class="search">
+        <form action="/customer" method="GET">
+            <input 
+                type="text" 
+                name="search" 
+                placeholder="Search Customers"
+                value="<%= search %>"
+            >
+            <button type="submit" class="btn-search">Search</button>
+        </form>
+    </div>
+</div>
+
+<form action="/customer" method="GET" class="menu-option" id="filterForm">
+
+    <div class="menu-options">
+        <span>Total Customers : <%= totalCustomers %></span>
+
+        <div class="filter-status">
+            <select name="status" id="statusFilter" class="custom-select-status">
+                <option value="all" <%= status === "all" ? "selected" : "" %>>All Status</option>
+                <option value="active" <%= status === "active" ? "selected" : "" %>>Active</option>
+                <option value="inactive" <%= status === "inactive" ? "selected" : "" %>>Inactive</option>
+            </select>
+            <i class="bi bi-chevron-down"></i>
+        </div>
+
+    </div>
+
+    <div class="date">
+        <input 
+            type="date" 
+            name="dateStart"
+            value="<%= dateStart %>"
+        />
+        :
+        <input 
+            type="date" 
+            name="dateEnd"
+            value="<%= dateEnd %>"
+        />
+    </div>
+
+    <button type="submit" class="btn-filter">Apply</button>
+</form>
+
+<div class="customer-table">
+    <table>
+        <thead>
+            <tr class="even">
+                <th>No</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Account Status</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% users.forEach((u, index) => { %>
+                <tr class="<%= index % 2 === 1 ? 'even' : '' %>">
+                    <td><%= index + 1 + ((page - 1) * limit) %></td>
+                    <td><%= u.username %></td>
+                    <td><%= u.email %></td>
+                    <td><%= u.phone %></td>
+                    <td class="<%= u.status === 'inactive' ? 'status-inactive' : 'status-active' %>">
+                        <%= u.status === 'inactive' ? 'Inactive' : 'Active' %>
+                    </td>
+                    <td><a href="/customer/<%= u.id %>" class="btn-see-more">See More</a></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<% if (totalCustomers > 5) { %>
+<div class="pagination">
+    <% if (page > 1) { %>
+        <a href="/customer?page=<%= page - 1 %>&search=<%= search %>&status=<%= status %>&dateStart=<%= dateStart %>&dateEnd=<%= dateEnd %>" class="page-prev">
+            <i class="bi bi-chevron-left"></i> Prev
+        </a>
+    <% } %>
+
+    <% for (let i = 1; i <= totalPages; i++) { %>
+        <a 
+            href="/customer?page=<%= i %>&search=<%= search %>&status=<%= status %>&dateStart=<%= dateStart %>&dateEnd=<%= dateEnd %>"
+            class="page-number <%= page === i ? 'active' : '' %>"
+        >
+            <%= i %>
+        </a>
+    <% } %>
+
+    <% if (page < totalPages) { %>
+        <a href="/customer?page=<%= page + 1 %>&search=<%= search %>&status=<%= status %>&dateStart=<%= dateStart %>&dateEnd=<%= dateEnd %>" class="page-next">
+            Next <i class="bi bi-chevron-right"></i>
+        </a>
+    <% } %>
+</div>
+<% } %>
+
+<script>
+    document.getElementById("statusFilter").addEventListener("change", function () {
+        document.getElementById("filterForm").submit();
+    });
+</script>
+

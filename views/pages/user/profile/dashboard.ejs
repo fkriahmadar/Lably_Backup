@@ -1,0 +1,206 @@
+<nav class="navbar">
+    <div class="nav1">
+        <h2>Dashboard</h2>
+        <p class="welcome">Hello There, <%= user.username %>!</p>
+    </div>
+
+    <div class="nav2">
+        <div class="notif-wrapper <%= reminders.length > 0 ? 'has-reminder' : '' %>">
+            <i class="bi bi-bell-fill" id="notifBtn"></i>
+            <% if(reminders.length > 0){ %>
+                <span class="notif-badge">
+                    <%= reminders.length %>
+                </span>
+            <% } %>
+            <div id="reminderPopup" class="reminder-popup">
+                <% reminders.forEach(r => { %>
+                    <div class="popup-item">
+                        <span class="popup-title">
+                            Reminder
+                        </span>
+                        <p>
+                            Your loan for
+                            <strong><%= r.product_name %></strong>
+                            has been reminded by admin.
+                            Please return it as soon as possible.
+                        </p>
+                    </div>
+                <% }) %>
+                <% if(reminders.length === 0){ %>
+                    <div class="no-reminder">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>No reminders</span>
+                    </div>
+                <% } %>
+
+            </div>
+        </div>
+        <a href="/profile-customer" class="profile-section">
+            <img src="<%= user.pp_image || '/Assets/profile.jpg' %>" alt="Profile" class="profile-img"/>
+        </a>
+        <p class="username">
+            <%= user.username %>
+        </p>
+    </div>
+</nav>
+
+<div class="verification <%= user.ktp_status === 'verified' ? 'verified' : 'unverified' %>">
+    <div class="verif-logo <%= user.ktp_status === 'verified' ? 'verified' : 'unverified' %>">
+        <% if (user.ktp_status === 'verified') { %>
+            <i class="bi bi-shield-check"></i>
+        <% } else if (user.ktp_status === 'pending') { %>
+            <i class="bi bi-clock"></i>
+        <% } else if (user.ktp_status === 'rejected') { %>
+            <i class="bi bi-exclamation-triangle"></i>
+        <% } else { %>
+            <i class="bi bi-exclamation-circle"></i>
+        <% } %>
+    </div>
+    <p class="verif-text">
+        <% if (user.ktp_status === 'verified') { %>
+            Verified Account
+        <% } else if (user.ktp_status === 'pending') { %>
+            Waiting for Verification
+        <% } else if (user.ktp_status === 'rejected') { %>
+            Verification Rejected
+        <% } else { %>
+            Unverified Account
+        <% } %>
+    </p>
+</div>
+<div class="dashboard-info">
+    <div class="order order-active">
+        <div class="dash-logo color1"><i class="bi bi-bag-plus"></i></div>
+        <div class="dash-text">
+            <p class="text1">Active Loans</p>
+            <p class="text2"><%= stats.active %></p>
+        </div>
+    </div>
+    <div class="order order-complete">
+        <div class="dash-logo color2"><i class="bi bi-bag-check"></i></div>
+        <div class="dash-text">
+            <p class="text1">Completed Loans</p>
+            <p class="text2"><%= stats.completed %></p>
+        </div>
+    </div>
+    <div class="order order-status">
+        <div class="dash-logo color3"><i class="bi bi-clock"></i></div>
+        <div class="dash-text">
+            <p class="text1">Waiting for Approval</p>
+            <p class="text2"><%= stats.pending %></p>
+        </div>
+    </div>
+    <div class="order order-equipment">
+        <div class="dash-logo color4"><i class="bi bi-tools"></i></div>
+        <div class="dash-text">
+            <p class="text1">Borrowed Items</p>
+            <p class="text2"><%= stats.uniqueProducts %></p>
+        </div>
+    </div>
+</div>
+<div class="dashboard-info2">
+    <div class="dash flow-info">
+        <div class="dash1 flow-info-text">
+            <p>Loan Flow</p>
+        </div>
+        <div class="flow-info-data">
+            <div class="flow">
+                <div class="flow-number">1</div>
+                <div class="flow-text">
+                    <p class="flow-text1">Borrow Equipment</p>
+                    <p class="flow-text2">Select available laboratory equipment</p>
+                </div>
+            </div>
+            <div class="flow">
+                <div class="flow-number">2</div>
+                <div class="flow-text">
+                    <p class="flow-text1">Submit Loan Request</p>
+                    <p class="flow-text2">Fill in the information and submit the loan request</p>
+                </div>
+            </div>
+            <div class="flow">
+                <div class="flow-number">3</div>
+                <div class="flow-text">
+                    <p class="flow-text1">Waiting for Approval</p>
+                    <p class="flow-text2">Waiting for information from laboratory admin</p>
+                </div>
+            </div>
+            <div class="flow">
+                <div class="flow-number">4</div>
+                <div class="flow-text">
+                    <p class="flow-text1">Take & Use</p>
+                    <p class="flow-text2">Take the equipment and use it according to the terms</p>
+                </div>
+            </div>
+            <div class="flow">
+                <div class="flow-number">5</div>
+                <div class="flow-text">
+                    <p class="flow-text1">Return</p>
+                    <p class="flow-text2">Return the equipment on time</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="dash recent-order">
+        <div class="dash1 recent-order-text">
+            <p>Recent Orders</p>
+        </div>
+        <div class="recent-order-product">
+            <% if (latestOrders.length === 0) { %>
+                <div class="product no-orders">
+                    <div class="product-text-info">
+                        <p class="text-info1">No Orders Yet</p>
+                    </div>
+                </div>
+            <% } %>
+
+            <% latestOrders.forEach((order) => { %>
+                <div class="product">
+                    <div class="product-img">
+                        <img src="<%= order.product_image ? '/uploads/' + order.product_image : '/Assets/default.png' %>" alt="<%= order.product_name %>">
+                    </div>
+                    <div class="product-text">
+                        <div class="product-text-info">
+                            <p class="text-info1"><%= order.product_name %></p>
+                            <p class="text-info2"><%= order.category_name || 'Category not available' %></p>
+                            <p class="text-info2"><%= order.tgl_pinjam %></p>
+                        </div>
+                        <div class="product-status <%= order.status === 'pending' || order.status === 'in use' ? 'green' : order.status === 'overdue' ? 'red' : order.status === 'completed' ? 'yellow' : '' %>">
+                            <%= order.status === 'pending' ? 'Paid' : order.status === 'in use' ? 'In Use' : order.status === 'overdue' ? 'Overdue' : order.status === 'completed' ? 'Returned' : order.status %>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<script>
+const notifBtn = document.getElementById("notifBtn");
+const reminderPopup = document.getElementById("reminderPopup");
+
+if (notifBtn && reminderPopup) {
+
+  notifBtn.addEventListener("click", () => {
+
+    if(reminderPopup.style.display === "block"){
+      reminderPopup.style.display = "none";
+    } else {
+      reminderPopup.style.display = "block";
+    }
+
+  });
+
+  document.addEventListener("click", (e) => {
+
+    if(
+      !notifBtn.contains(e.target) &&
+      !reminderPopup.contains(e.target)
+    ){
+      reminderPopup.style.display = "none";
+    }
+
+  });
+
+}
+</script>

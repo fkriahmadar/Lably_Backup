@@ -1,0 +1,113 @@
+<nav class="navbar">
+  <span>Analytics</span>
+  <img src="Assets/profile.jpg" alt="" />
+</nav>
+
+<div class="information">
+  <div class="total-cust total">
+    <p>Total Customers</p>
+    <p class="qty"><%= totalCustomers %></p>
+  </div>
+  <div class="total-items total">
+    <p>Total Items</p>
+    <p class="qty"><%= totalItems %></p>
+  </div>
+  <div class="total-trs total">
+    <p>Total Transactions</p>
+    <p class="qty"><%= totalTransactions %></p>
+  </div>
+  <div class="total-income total">
+    <p>Total Income (Rp)</p>
+    <p class="qty"><%= parseFloat(totalIncome).toLocaleString('id-ID') %></p>
+  </div>
+</div>
+<div class="page-text">Monthly Activities Trends</div>
+<div class="monthly-activity-table">
+  <table>
+    <thead>
+      <tr>
+        <td></td>
+        <td>Jan</td>
+        <td>Feb</td>
+        <td>Mar</td>
+        <td>Apr</td>
+        <td>May</td>
+        <td>Jun</td>
+        <td>Jul</td>
+        <td>Aug</td>
+        <td>Sep</td>
+        <td>Oct</td>
+        <td>Nov</td>
+        <td>Dec</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Loan</td>
+        <% for (let i = 0; i < 12; i++) { %>
+          <td><%= (monthlyData && monthlyData[i]) ? monthlyData[i] : 0 %></td>
+        <% } %>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="top-table">
+  <div class="top-loan">
+    <div class="top-page-text">Top Loan Items</div>
+    <div class="table-loan">
+      <table>
+        <thead>
+          <tr>
+            <td>No</td>
+            <td class="mid">Product Name</td>
+            <td>Qty</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (topItems && topItems.length > 0) { %>
+            <% topItems.forEach((item, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= item.product_name || 'N/A' %></td>
+                <td><%= item.total_qty %></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="3">Tidak ada data</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="top-cust">
+    <div class="top-page-text">Top Customer</div>
+    <div class="table-cust">
+      <table>
+        <thead>
+          <tr>
+            <td>No</td>
+            <td class="mid">Customer Name</td>
+            <td>Transactions</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (topCustomers && topCustomers.length > 0) { %>
+            <% topCustomers.forEach((customer, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= customer.customer_name || 'Unknown' %></td>
+                <td><%= customer.transaction_count %></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="3">Tidak ada data</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

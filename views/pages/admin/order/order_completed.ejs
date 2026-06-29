@@ -1,0 +1,211 @@
+<nav class="navbar">
+  <span>Orders Completed</span>
+  <img src="Assets/profile.jpg" alt="" />
+</nav>
+
+<!-- ORDER TOTAL INFO -->
+<div class="order-info">
+  <div class="box">
+    <div class="total"><%= totalCompleted %></div>
+    <div class="detail-pending">
+      <span class="pending">ITEMS</span>
+      <span>ORDERS COMPLETED</span>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="filter">
+  <div class="search search-form">
+    <form action="/order-completed" method="GET" style="display: flex; width: 100%">
+      <input type="text" name="search" placeholder="Search" value="<%= search || '' %>" />
+      <button type="submit" class="btn-search">
+        <i class="bi bi-search"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- FILTER BUTTONS + DATE RANGE -->
+<div class="menu-option">
+  <div class="menu-options">
+    <!-- ALL -->
+    <form action="/order-completed" method="GET">
+      <button type="submit" class="btn-search <%= !filter ? 'active' : '' %>">
+        All
+      </button>
+    </form>
+
+    <!-- Completed -->
+    <form action="/order-completed" method="GET">
+      <input type="hidden" name="filter" value="completed" />
+      <button type="submit" class="btn-search <%= filter === 'completed' ? 'active' : '' %>">
+        Completed
+      </button>
+    </form>
+
+    <!-- Completed Overdue -->
+    <form action="/order-completed" method="GET">
+      <input type="hidden" name="filter" value="overdue" />
+      <button type="submit" class="btn-search <%= filter === 'overdue' ? 'active' : '' %>">
+        Completed Overdue
+      </button>
+    </form>
+  </div>
+
+  <!-- DATE FILTER -->
+  <div class="date">
+    <form action="/order-completed" method="GET" style="display: flex; gap: 5px">
+      <input type="date" name="start" value="<%= start || '' %>" /> :
+      <input type="date" name="end" value="<%= end || '' %>" />
+      <button type="submit" class="btn-search" style="border-radius: 5px">Filter</button>
+    </form>
+  </div>
+</div>
+
+<!-- TITLE -->
+<div class="page-text">
+  <span>List Of All Orders Completed</span>
+</div>
+
+<!-- JSON DATA FOR JS -->
+<script id="completed-json" type="application/json">
+  <%- JSON.stringify(orders) %>
+</script>
+
+<!-- COMPLETED TABLE -->
+<div class="customer-table">
+  <table>
+    <thead>
+      <tr class="even">
+        <th>No</th>
+        <th>Customer</th>
+        <th>Equipment</th>
+        <th>Loan Period</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody id="completedTableBody">
+      <!-- Row akan dirender JS -->
+    </tbody>
+  </table>
+</div>
+
+<!-- PAGINATION -->
+<div class="pagination" id="paginationCompleted"></div>
+
+<script>
+  const completedData = JSON.parse(
+    document.getElementById("completed-json").textContent
+  );
+
+  const tableBody = document.getElementById("completedTableBody");
+  const pagination = document.getElementById("paginationCompleted");
+
+  const ROWS_PER_PAGE = 5;
+  let currentPage = 1;
+
+  function createCompletedRow(o, index) {
+    const tr = document.createElement("tr");
+
+    const loanStart = o.tgl_pinjam ? o.tgl_pinjam.split(" ")[0] : "";
+    const loanEnd = o.tgl_kembali ? o.tgl_kembali.split(" ")[0] : "";
+
+    const statusClass =
+      o.overdue_flag == 1
+        ? "status-completed-overdue"
+        : "status-completed";
+    const statusText = o.overdue_flag == 1
+      ? "Completed Overdue"
+      : "Completed";
+
+    tr.innerHTML = `
+      <td>${index}</td>
+      <td>${o.username}</td>
+      <td>${o.product_name}</td>
+      <td>${loanStart} - ${loanEnd}</td>
+      <td class="${statusClass}">${statusText}</td>
+    `;
+    return tr;
+  }
+
+  function renderTable() {
+    const totalPages = Math.ceil(completedData.length / ROWS_PER_PAGE);
+    if (currentPage > totalPages) currentPage = 1;
+
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    const sliced = completedData.slice(start, start + ROWS_PER_PAGE);
+
+    tableBody.innerHTML = "";
+
+    if (completedData.length === 0) {
+      tableBody.innerHTML =
+        `<tr><td colspan="5" style="text-align:center;padding:20px">No completed orders found.</td></tr>`;
+    } else {
+      sliced.forEach((o, i) => {
+        tableBody.appendChild(createCompletedRow(o, start + i + 1));
+      });
+    }
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    pagination.innerHTML = "";
+    if (totalPages <= 1) return;
+
+    const maxNumbers = 2;
+    let startPage = currentPage;
+    let endPage = Math.min(totalPages, currentPage + maxNumbers - 1);
+
+    if (totalPages <= maxNumbers) {
+      startPage = 1;
+      endPage = totalPages;
+    }
+
+    if (currentPage > totalPages - (maxNumbers - 1)) {
+      startPage = Math.max(1, totalPages - (maxNumbers - 1));
+      endPage = totalPages;
+    }
+
+    // Prev
+    if (currentPage > 1) {
+      const prev = document.createElement("button");
+      prev.className = "page-prev";
+      prev.innerHTML = `<i class="bi bi-chevron-left"></i> PREV`;
+      prev.onclick = () => {
+        currentPage--;
+        renderTable();
+      };
+      pagination.appendChild(prev);
+    }
+
+    // Number Buttons
+    for (let page = startPage; page <= endPage; page++) {
+      const btn = document.createElement("button");
+      btn.className = "page-number";
+      if (page === currentPage) btn.classList.add("active");
+      btn.textContent = page;
+      btn.onclick = () => {
+        currentPage = page;
+        renderTable();
+      };
+      pagination.appendChild(btn);
+    }
+
+    // Next
+    if (currentPage < totalPages) {
+      const next = document.createElement("button");
+      next.className = "page-next";
+      next.innerHTML = `NEXT <i class="bi bi-chevron-right"></i>`;
+      next.onclick = () => {
+        currentPage++;
+        renderTable();
+      };
+      pagination.appendChild(next);
+    }
+  }
+
+  renderTable();
+</script>

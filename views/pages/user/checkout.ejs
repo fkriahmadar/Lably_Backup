@@ -1,0 +1,382 @@
+<div class="container checkout-container">
+  <div id="qris-container" style="display:none;">
+  <%- include('./payment/qris', { subtotal, invoiceNumber }) %>
+  </div>
+  <div id="card-container" style="display:none;">
+  <%- include('./payment/card', { subtotal, invoiceNumber, user}) %>
+  </div>
+  <div id="ewallet-container" style="display:none;">
+  <%- include('./payment/e-wallet', { subtotal, invoiceNumber, user }) %>
+  </div>
+  <div id="ewallet-qr-container" style="display:none;">
+  <%- include('./payment/e-wallet_QR', { subtotal, invoiceNumber, user }) %>
+  </div>
+  <section class="checkout-details">
+    <h2 class="section-title">Check Out</h2>
+
+    <div class="cart-items-list">
+      <% if (!items || items.length === 0) { %>
+        <p>No items to checkout.</p>
+      <% } else { %>
+        <% items.forEach(function(item){ %>
+          <div class="cart-item">
+            <div class="item-img-wrap">
+              <% /* placeholder image - replace with item image if available */ %>
+              <img src="<%= item.image %>" alt="<%= item.name %>">
+            </div>
+
+            <div class="item-product">
+              <span class="item-name"><%= item.name %></span>
+              <span class="item-price">Rp<%= Number(item.price).toLocaleString() %></span>
+              <span class="item-quantity"><%= item.quantity %>x</span>
+              <span class="item-days"><%= item.days %> hari</span>
+              <span class="item-total">Rp<%= Number(item.itemTotal).toLocaleString() %></span>
+            </div>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+
+    <div class="order-summary">
+      <div class="summary-item">
+        <span>Subtotal:</span>
+        <span>Rp<%= Number(subtotal).toLocaleString() %></span>
+      </div>
+      <div class="summary-item">
+        <span>Shipping:</span>
+        <span>Rp0</span>
+      </div>
+      <div class="summary-item total">
+        <span>Total:</span>
+        <span>Rp<%= Number(subtotal).toLocaleString() %></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="payment-info">
+    <h3>Payment Info</h3>
+    <div class="payment-method">
+      <span>Payment Method</span>
+      <div class="method-options">
+        <button class="method-btn">Credit Card</button>
+        <button class="method-btn">QRIS</button>
+        <button class="method-btn">E-Wallet</button>
+      </div>
+    </div>
+    <div class="btn-action">
+      <form method="post" action="/checkout/complete" style="flex: 1;" id="checkout-form">
+        <input type="hidden" name="payment_method" id="payment_method" value="" />
+        <input type="hidden" name="ewallet_provider" id="ewallet_provider" value="" />
+        <button class="btn btn-primary checkout-btn" id="checkout-submit-btn" type="button"> Segera lakukan pembayaran </button>
+      </form>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+  (function(){
+    const paymentMethodInput = document.getElementById('payment_method');
+    const checkoutForm = document.getElementById('checkout-form');
+    const checkoutButton = document.getElementById('checkout-submit-btn');
+    const methodButtons = document.querySelectorAll('.method-btn');
+    let selectedMethod = null;
+    methodButtons.forEach(btn => {
+      btn.addEventListener('click', function(){
+        methodButtons.forEach(b=>b.classList.remove('active'));
+        this.classList.add('active');
+        selectedMethod = this.textContent.trim();
+        checkoutButton.textContent = 'Bayar menggunakan ' + selectedMethod;
+      });
+    });
+
+    let qrisConfirmed = false;
+    let cardConfirmed = false;
+    let ewalletConfirmed = false;
+    let selectedWallet = null;
+
+    if (checkoutButton){
+      checkoutButton.addEventListener('click', function(){
+        if (
+      (selectedMethod === 'QRIS' && qrisConfirmed) ||
+      (selectedMethod === 'Credit Card' && cardConfirmed) ||
+      (selectedMethod === 'E-Wallet' && ewalletConfirmed)
+  ){
+      checkoutForm.submit();
+      return;
+  }
+        if (!selectedMethod) {
+          alert('Pilih metode pembayaran terlebih dahulu.');
+          return;
+        }
+
+        paymentMethodInput.value = selectedMethod;
+        document.getElementById('ewallet_provider').value = '';
+
+        if (selectedMethod === 'QRIS'){
+          const qrisContainer = document.getElementById('qris-container');
+
+          if (!document.getElementById('qris-backdrop')){
+            const bd = document.createElement('div');
+            bd.id = 'qris-backdrop';
+            bd.style.position = 'fixed';
+            bd.style.top = 0;
+            bd.style.left = 0;
+            bd.style.width = '100%';
+            bd.style.height = '100%';
+            bd.style.background = 'rgba(0,0,0,0.4)';
+            bd.style.zIndex = 9998;
+            document.body.appendChild(bd);
+          }
+
+          qrisContainer.style.display = 'block';
+          qrisContainer.style.position = 'fixed';
+          qrisContainer.style.top = '50%';
+          qrisContainer.style.left = '50%';
+          qrisContainer.style.transform = 'translate(-50%, -50%)';
+          qrisContainer.style.zIndex = 9999;
+          qrisContainer.style.maxWidth = '95%';
+          qrisContainer.style.maxHeight = '95%';
+          qrisContainer.style.overflow = 'hidden';
+
+          setTimeout(()=>{
+            const qrcodeEl = document.getElementById('qris-qrcode');
+            if (qrcodeEl && qrcodeEl.children.length === 0){
+              new QRCode(qrcodeEl, {
+                text: "00020101021126670016COM.NOBUBANK.WWW01189360050300000879140214INVOICE2064775204541153033605802ID5910MyMerchant6007Jakarta6105123456304ABCD",
+                width: 160,
+                height: 160,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+              });
+            }
+          }, 50);
+          document.getElementById('qris-container').scrollIntoView({behavior: 'smooth', block: 'start'});
+          return;
+        }
+
+        if (selectedMethod === 'E-Wallet'){
+          const ewalletContainer = document.getElementById('ewallet-container');
+
+          if (!document.getElementById('ewallet-backdrop')){
+            const bd = document.createElement('div');
+            bd.id = 'ewallet-backdrop';
+            bd.style.position = 'fixed';
+            bd.style.top = 0;
+            bd.style.left = 0;
+            bd.style.width = '100%';
+            bd.style.height = '100%';
+            bd.style.background = 'rgba(0,0,0,0.4)';
+            bd.style.zIndex = 9998;
+            document.body.appendChild(bd);
+          }
+
+          ewalletContainer.style.display = 'block';
+          ewalletContainer.style.position = 'fixed';
+          ewalletContainer.style.top = '50%';
+          ewalletContainer.style.left = '50%';
+          ewalletContainer.style.transform = 'translate(-50%, -50%)';
+          ewalletContainer.style.zIndex = 9999;
+          ewalletContainer.style.maxWidth = '95%';
+          ewalletContainer.style.maxHeight = '95%';
+          ewalletContainer.style.overflow = 'hidden';
+          document.getElementById('ewallet-container').scrollIntoView({behavior: 'smooth', block: 'start'});
+          return;
+        }
+
+        if (selectedMethod === 'Credit Card'){
+          const cardContainer = document.getElementById('card-container');
+
+          if (!document.getElementById('card-backdrop')){
+            const bd = document.createElement('div');
+            bd.id = 'card-backdrop';
+            bd.style.position = 'fixed';
+            bd.style.top = 0;
+            bd.style.left = 0;
+            bd.style.width = '100%';
+            bd.style.height = '100%';
+            bd.style.background = 'rgba(0,0,0,0.4)';
+            bd.style.zIndex = 9998;
+            document.body.appendChild(bd);
+          }
+
+          cardContainer.style.display = 'block';
+          cardContainer.style.position = 'fixed';
+          cardContainer.style.top = '50%';
+          cardContainer.style.left = '50%';
+          cardContainer.style.transform = 'translate(-50%, -50%)';
+          cardContainer.style.zIndex = '9999';
+          cardContainer.style.maxWidth = '95%';
+          cardContainer.style.maxHeight = '95%';
+          cardContainer.style.overflow = 'hidden';
+
+          return;
+        }
+
+        if (checkoutForm) {
+          checkoutForm.submit();
+        }
+      });
+    }
+
+    if (checkoutForm){
+      checkoutForm.addEventListener('submit', function(e){
+        if (selectedMethod === 'QRIS' && !qrisConfirmed){
+          e.preventDefault();
+          return;
+        }
+        if (selectedMethod === 'E-Wallet' && !ewalletConfirmed){
+          e.preventDefault();
+          return;
+        }
+      });
+    }
+
+    const ewalletButtons = document.querySelectorAll('#ewallet-container .options');
+    ewalletButtons.forEach(button => {
+      button.addEventListener('click', function(){
+        const wallet = this.dataset.wallet;
+        if (!wallet) return;
+
+        selectedWallet = wallet;
+        paymentMethodInput.value = 'E-Wallet';
+        document.getElementById('ewallet_provider').value = wallet;
+
+        const ewalletContainer = document.getElementById('ewallet-container');
+        const ewalletQrContainer = document.getElementById('ewallet-qr-container');
+        const logoImage = document.getElementById('ewallet-qr-logo');
+        const walletLabel = document.getElementById('ewallet-wallet-label');
+
+        if (logoImage) {
+          logoImage.src = '/Assets/' + wallet.toLowerCase() + '.png';
+          logoImage.alt = wallet + ' Logo';
+        }
+        if (walletLabel) {
+          walletLabel.textContent = wallet;
+        }
+
+        if (!document.getElementById('ewallet-backdrop')){
+          const bd = document.createElement('div');
+          bd.id = 'ewallet-backdrop';
+          bd.style.position = 'fixed';
+          bd.style.top = 0;
+          bd.style.left = 0;
+          bd.style.width = '100%';
+          bd.style.height = '100%';
+          bd.style.background = 'rgba(0,0,0,0.4)';
+          bd.style.zIndex = 9998;
+          document.body.appendChild(bd);
+        }
+
+        ewalletContainer.style.display = 'none';
+        ewalletQrContainer.style.display = 'block';
+        ewalletQrContainer.style.position = 'fixed';
+        ewalletQrContainer.style.top = '50%';
+        ewalletQrContainer.style.left = '50%';
+        ewalletQrContainer.style.transform = 'translate(-50%, -50%)';
+        ewalletQrContainer.style.zIndex = 9999;
+        ewalletQrContainer.style.maxWidth = '95%';
+        ewalletQrContainer.style.maxHeight = '95%';
+        ewalletQrContainer.style.overflow = 'hidden';
+
+        setTimeout(()=>{
+          const qrcodeEl = document.getElementById('ewallet-qrcode');
+          if (qrcodeEl && qrcodeEl.children.length === 0){
+            new QRCode(qrcodeEl, {
+              text: "00020101021126670016COM.NOBUBANKWWW01189360050300000879140214INVOICE2064775204541153033605802ID5910MyMerchant6007Jakarta610513456304ABCD",
+              width: 160,
+              height: 160,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+              correctLevel: QRCode.CorrectLevel.H
+            });
+          }
+        }, 50);
+
+        document.getElementById('ewallet-qr-container').scrollIntoView({behavior: 'smooth', block: 'start'});
+      });
+    });
+
+    document.addEventListener('click', function(e){
+      const isEwalletCancel = e.target.closest('#ewallet-container .cancel');
+      if (isEwalletCancel){
+        const ewalletContainer = document.getElementById('ewallet-container');
+        const bd = document.getElementById('ewallet-backdrop');
+        if (ewalletContainer){
+          ewalletContainer.style.display = 'none';
+          ewalletContainer.style.position = '';
+          ewalletContainer.style.top = '';
+          ewalletContainer.style.left = '';
+          ewalletContainer.style.transform = '';
+          ewalletContainer.style.zIndex = '';
+        }
+        if (bd) bd.remove();
+        selectedMethod = null;
+        paymentMethodInput.value = '';
+        checkoutButton.textContent = 'Segera lakukan pembayaran';
+      }
+
+      if (e.target && e.target.id === 'qris-paid-btn'){
+        const bd = document.getElementById('qris-backdrop');
+        if (bd) bd.remove();
+        const qrisContainer = document.getElementById('qris-container');
+        if (qrisContainer){
+          qrisContainer.style.display = 'none';
+          qrisContainer.style.position = '';
+          qrisContainer.style.top = '';
+          qrisContainer.style.left = '';
+          qrisContainer.style.transform = '';
+          qrisContainer.style.zIndex = '';
+          qrisContainer.style.maxWidth = '';
+          qrisContainer.style.maxHeight = '';
+          qrisContainer.style.overflow = 'hidden';
+        }
+        qrisConfirmed = true;
+        checkoutButton.textContent = 'Checkout';
+      }
+
+      if (e.target && e.target.id === 'card-paid-btn'){
+        const cardContainer = document.getElementById('card-container');
+        const bd = document.getElementById('card-backdrop');
+
+        if(cardContainer){
+          cardContainer.style.display = 'none';
+          cardContainer.style.position = '';
+          cardContainer.style.top = '';
+          cardContainer.style.left = '';
+          cardContainer.style.transform = '';
+          cardContainer.style.zIndex = '';
+          cardContainer.style.maxWidth = '';
+          cardContainer.style.maxHeight = '';
+          cardContainer.style.overflow = '';
+        }
+        if (bd) bd.remove();
+
+        cardConfirmed = true;
+
+        checkoutButton.textContent = 'Checkout';
+      }
+
+      const isEwalletFinish = e.target.closest('#ewallet-qr-container .finish');
+      if (isEwalletFinish){
+        const bd = document.getElementById('ewallet-backdrop');
+        if (bd) bd.remove();
+        const ewalletQrContainer = document.getElementById('ewallet-qr-container');
+        if (ewalletQrContainer){
+          ewalletQrContainer.style.display = 'none';
+          ewalletQrContainer.style.position = '';
+          ewalletQrContainer.style.top = '';
+          ewalletQrContainer.style.left = '';
+          ewalletQrContainer.style.transform = '';
+          ewalletQrContainer.style.zIndex = '';
+          ewalletQrContainer.style.maxWidth = '';
+          ewalletQrContainer.style.maxHeight = '';
+          ewalletQrContainer.style.overflow = 'hidden';
+        }
+        ewalletConfirmed = true;
+        checkoutButton.textContent = 'Checkout';
+      }
+    });
+  })();
+</script>

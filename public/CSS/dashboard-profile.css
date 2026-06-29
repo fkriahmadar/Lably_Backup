@@ -1,0 +1,549 @@
+/* ==========================================================================
+   GLOBAL RESET & BASE STYLES (Aligned with profile-page.css)
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.container {
+  display: grid;
+  height: 100vh;
+  grid-template-areas: "left right";
+  grid-template-columns: 1fr 4fr;
+  background: #f8f9ff;
+}
+
+.right {
+  grid-area: right;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 35px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   SECTION 1: NAVBAR
+   ========================================================================== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.navbar .nav1 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.navbar .nav1 h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a3a6b;
+}
+
+.navbar .welcome {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.navbar .nav2 {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.navbar .nav2 .profile-section {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav2 .profile-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #dde3f0;
+  object-fit: cover;
+  transition: border-color 0.3s ease;
+}
+
+.navbar .nav2 .profile-img:hover {
+  border-color: #1a3a6b;
+}
+
+.navbar .nav2 .username {
+  font-size: 0.9rem;
+  color: #1a3a6b;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   SECTION 2: VERIFICATION (Aligned with help-card styles)
+   ========================================================================== */
+.verification {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.2rem 1.8rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  background: #fff;
+  border: 1.5px solid #dde3f0;
+}
+
+.verification.verified {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+}
+
+.verification.unverified,
+.verification.pending {
+  background: #fffbeb;
+  border: 1.5px solid #fca738;
+}
+
+.verification.rejected {
+  background: #ffeded;
+  border: 1.5px solid #f86363;
+}
+
+.verif-logo {
+  font-size: 1.5rem;
+  color: #fff;
+  background: #fc9a38;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.verif-logo.verified {
+  background: #16a34a;
+}
+
+.verif-logo.pending,
+.verif-logo.unverified {
+  background: #fc9a38;
+}
+
+.verif-logo.rejected {
+  background: #ea0c0c;
+}
+
+.verif-logo i {
+  color: #fff;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verif-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a3a6b;
+}
+
+.verification.verified .verif-text {
+  color: #16a34a;
+}
+
+.verification.pending .verif-text,
+.verification.unverified .verif-text {
+  color: #c27803;
+}
+
+.verification.rejected .verif-text {
+  color: #b91c1c;
+}
+
+/* ==========================================================================
+   SECTION 3: STATS CARDS (Aligned with profile-card base)
+   ========================================================================== */
+.dashboard-info {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-info .order {
+  background: #fff;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  padding: 1.2rem;
+  gap: 1.2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.dashboard-info .order:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-info .order .dash-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dashboard-info .order .color1 {
+  background-color: #e8f0ff;
+  color: #1a3a6b;
+}
+
+.dashboard-info .order .color2 {
+  background-color: #e6f9ed;
+  color: #16a34a;
+}
+
+.dashboard-info .order .color3 {
+  background-color: #fffbeb;
+  color: #d97706;
+}
+
+.dashboard-info .order .color4 {
+  background-color: #fdf2f8;
+  color: #db2777;
+}
+
+.dashboard-info .order .dash-logo i {
+  font-size: 1.3rem;
+}
+
+.dashboard-info .order .dash-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dashboard-info .order .dash-text .text1 {
+  font-size: 0.82rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.dashboard-info .order .dash-text .text2 {
+  font-size: 1.6rem;
+  color: #1a3a6b;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   SECTION 4: FLOW & RECENT ORDERS (Aligned with profile-card base)
+   ========================================================================== */
+.dashboard-info2 {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 1.5rem;
+  align-items: stretch;
+  flex-grow: 1;
+  min-height: 0;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-info2 .flow-info,
+.dashboard-info2 .recent-order {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.8rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.dashboard-info2 .dash .dash1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a3a6b;
+  margin-bottom: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* Flow Info Data */
+.dashboard-info2 .flow-info .flow-info-data {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 0.5rem;
+}
+
+.dashboard-info2 .flow-info .flow-info-data .flow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.flow-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.flow-text1 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.flow-text2 {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: #888;
+}
+
+.dashboard-info2 .flow-info .flow-info-data .flow .flow-number {
+  background-color: var(--primary);
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Recent Order */
+.dashboard-info2 .recent-order {
+  gap: 1rem;
+}
+
+.dashboard-info2 .recent-order .recent-order-product {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 0.5rem;
+}
+
+.dashboard-info2 .recent-order .recent-order-product .product {
+  background: #f8f9ff;
+  border-radius: 0.75rem;
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.dashboard-info2 .recent-order .recent-order-product .product:hover {
+  background: #f1f3f9;
+}
+
+.dashboard-info2 .recent-order .recent-order-product .product .product-img {
+  width: 56px;
+  height: 56px;
+  background-color: #fff;
+  border: 1.5px solid #dde3f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dashboard-info2 .recent-order .recent-order-product .product .product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dashboard-info2 .recent-order .recent-order-product .product .product-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.dashboard-info2
+  .recent-order
+  .recent-order-product
+  .product
+  .product-text-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dashboard-info2
+  .recent-order
+  .recent-order-product
+  .product
+  .product-text-info
+  .text-info1 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.dashboard-info2
+  .recent-order
+  .recent-order-product
+  .product
+  .product-text-info
+  .text-info2 {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.product.no-orders .product-text-info {
+  padding: 1rem 0;
+}
+
+/* ==========================================================================
+   SECTION 5: NOTIFICATIONS & REMINDERS (Aligned with premium popup styles)
+   ========================================================================== */
+.notif-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#notifBtn {
+  font-size: 1.4rem;
+  color: #1a3a6b;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#notifBtn:hover {
+  color: var(--primary);
+}
+
+.notif-wrapper.has-reminder #notifBtn {
+  color: #f28c00;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: #ff3b30;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reminder-popup {
+  display: none;
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 340px;
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #dde3f0;
+  padding: 1rem;
+  z-index: 999;
+}
+
+.popup-item {
+  background: #fffbeb;
+  border-left: 4px solid #f28c00;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.popup-item:last-child {
+  margin-bottom: 0;
+}
+
+.popup-title {
+  display: block;
+  color: #d97706;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+
+.popup-item p {
+  font-size: 0.8rem;
+  color: #555;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.popup-item strong {
+  color: #1a3a6b;
+}
+
+.no-reminder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.8rem 1.2rem;
+  background: #e6f9ed;
+  border: 1.5px solid #86efac;
+  border-radius: 0.5rem;
+  color: #16a34a;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.no-reminder i {
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   SCROLLBAR STYLES FOR INTERNAL SCROLL
+   ========================================================================== */
+.dashboard-info2 .flow-info .flow-info-data::-webkit-scrollbar,
+.dashboard-info2 .recent-order .recent-order-product::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-info2 .flow-info .flow-info-data::-webkit-scrollbar-track,
+.dashboard-info2 .recent-order .recent-order-product::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-info2 .flow-info .flow-info-data::-webkit-scrollbar-thumb,
+.dashboard-info2 .recent-order .recent-order-product::-webkit-scrollbar-thumb {
+  background: #dde3f0;
+  border-radius: 3px;
+}
+
+.dashboard-info2 .flow-info .flow-info-data::-webkit-scrollbar-thumb:hover,
+.dashboard-info2
+  .recent-order
+  .recent-order-product::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
