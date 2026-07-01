@@ -186,33 +186,22 @@
         }
 
         if (selectedMethod === 'Credit Card'){
-          const cardContainer = document.getElementById('card-container');
 
-          if (!document.getElementById('card-backdrop')){
-            const bd = document.createElement('div');
-            bd.id = 'card-backdrop';
-            bd.style.position = 'fixed';
-            bd.style.top = 0;
-            bd.style.left = 0;
-            bd.style.width = '100%';
-            bd.style.height = '100%';
-            bd.style.background = 'rgba(0,0,0,0.4)';
-            bd.style.zIndex = 9998;
-            document.body.appendChild(bd);
-          }
+  const cardContainer =
+  document.getElementById('card-container');
 
-          cardContainer.style.display = 'block';
-          cardContainer.style.position = 'fixed';
-          cardContainer.style.top = '50%';
-          cardContainer.style.left = '50%';
-          cardContainer.style.transform = 'translate(-50%, -50%)';
-          cardContainer.style.zIndex = '9999';
-          cardContainer.style.maxWidth = '95%';
-          cardContainer.style.maxHeight = '95%';
-          cardContainer.style.overflow = 'hidden';
+  cardContainer.style.display = 'block';
 
-          return;
-        }
+  cardContainer.style.position = 'fixed';
+  cardContainer.style.top = '50%';
+  cardContainer.style.left = '50%';
+  cardContainer.style.transform =
+    'translate(-50%, -50%)';
+
+  cardContainer.style.zIndex = '9999';
+
+  return;
+}
 
         if (checkoutForm) {
           checkoutForm.submit();
@@ -337,25 +326,17 @@
       }
 
       if (e.target && e.target.id === 'card-paid-btn'){
-        const cardContainer = document.getElementById('card-container');
-        const bd = document.getElementById('card-backdrop');
+        const cardContainer =
+        document.getElementById('card-container');
 
         if(cardContainer){
           cardContainer.style.display = 'none';
-          cardContainer.style.position = '';
-          cardContainer.style.top = '';
-          cardContainer.style.left = '';
-          cardContainer.style.transform = '';
-          cardContainer.style.zIndex = '';
-          cardContainer.style.maxWidth = '';
-          cardContainer.style.maxHeight = '';
-          cardContainer.style.overflow = '';
         }
-        if (bd) bd.remove();
 
         cardConfirmed = true;
 
-        checkoutButton.textContent = 'Checkout';
+        checkoutButton.textContent =
+        'Checkout';
       }
 
       const isEwalletFinish = e.target.closest('#ewallet-qr-container .finish');

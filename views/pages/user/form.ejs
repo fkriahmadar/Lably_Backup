@@ -1,7 +1,7 @@
 <div class="form-wrapper" data-qty="<%= qty %>">
   <div class="form-container">
     <div class="left">
-      <a href="/product/<%= product.id %>" class="btn-back">
+      <a href="#" onclick="history.back(); return false;" class="btn-back">
         <i class="bi bi-chevron-left"></i>
         <span>Back</span>
       </a>
@@ -20,6 +20,7 @@
       <form action="/submit-data" method="post" id="loan-order-form">
         <input type="hidden" name="action_type" value="<%= action %>" />
         <input type="hidden" name="product_id" value="<%= product.id %>" />
+        <input type="hidden" name="extend_order_id" value="<%= typeof extendOrderId !== 'undefined' ? extendOrderId : '' %>" />
 
         <div class="form-section">
           <p>Product Detail</p>
@@ -52,7 +53,15 @@
 
           <!-- Tanggal -->
           <div class="grid">
-            <input type="date" id="borrowDate" name="borrow_date" required />
+            <input 
+              type="date" 
+              id="borrowDate" 
+              name="borrow_date" 
+              value="<%= typeof borrowDate !== 'undefined' ? borrowDate : '' %>"
+              <%= action === 'extend' ? 'readonly' : '' %>
+              style="<%= action === 'extend' ? 'background: #f5f7ff; color: #555; cursor: not-allowed;' : '' %>"
+              required 
+            />
             <input type="date" id="returnDate" name="return_date" required />
           </div>
 
@@ -77,12 +86,12 @@
           <p>User Data</p>
 
           <div class="grid">
-            <input type="text" value="<%= user.username %>" readonly />
-            <input type="text" value="<%= user.phone %>" readonly />
+              <input type="text" value="<%= user.username %>" readonly/>
+              <input type="text" name="phone" value="<%= user.phone %>" readonly/>
           </div>
 
           <div class="grid-2">
-            <input type="text" value="<%= user.address %>" readonly />
+              <input type="text" name="address" value="<%= user.address %>" readonly/>
           </div>
         </div>
 

@@ -35,10 +35,16 @@ const timelineSteps = [
 ];
 
 let completedCount = 1;
-if (status === 'pending')   completedCount = 3;
-if (status === 'in use')    completedCount = 4;
-if (status === 'overdue')   completedCount = 4;
-if (status === 'completed') completedCount = 5;
+
+if (status === 'pending') {
+    completedCount = 2;
+} else if (status === 'in use') {
+    completedCount = 3;
+} else if (status === 'overdue') {
+    completedCount = 3;
+} else if (status === 'completed' || status === 'returned') {
+    completedCount = 4;
+}
 %>
 
 <!-- ===== TOP BAR ===== -->
@@ -136,19 +142,36 @@ if (status === 'completed') completedCount = 5;
                 <% } %>
             </span>
         </div>
-      <% const disableExtend = status === 'completed'; %>
+      <%
+        const hasPendingExtend = Number(order.pending_extend) > 0;
 
-<button
-    class="btn-tambah <%= disableExtend ? 'btn-disabled' : '' %>"
-    <%= disableExtend ? 'disabled' : '' %>>
+        const disableExtend =
+            status === "completed" ||
+            hasPendingExtend;
+        %>
+
+<% if (hasPendingExtend) { %>
+
+<a href="#" class="btn-tambah btn-disabled" style="pointer-events:none;">
+    <i class="bi bi-hourglass-split"></i>
+    Extension Request Pending
+</a>
+
+<% } else if (status === "completed") { %>
+
+<a href="#" class="btn-tambah btn-disabled" style="pointer-events:none;">
+    <i class="bi bi-check-circle"></i>
+    Borrowing Completed
+</a>
+
+<% } else { %>
+
+<a href="/form?action=extend&product_id=<%= order.id_products %>&qty=<%= order.qty %>&borrow_date=<%= order.tgl_kembali %>&extend_order_id=<%= order.id %>" class="btn-tambah">
     <i class="bi bi-plus-circle"></i>
+    Add Borrowing Duration
+</a>
 
-    <% if (disableExtend) { %>
-        Borrowing Completed
-    <% } else { %>
-        Add Borrowing Duration
-    <% } %>
-</button>
+<% } %>
     </div>
   </div>
 
@@ -246,66 +269,65 @@ if (status === 'completed') completedCount = 5;
   </div>
 
     <!-- Return Information -->
-<div class="card card-return">
-  <div class="card-header">
-    <h2>Return Information</h2>
-
-    <% if (status === 'completed') { %>
-
-      <div class="return-message success">
-        <i class="bi bi-check-circle-fill"></i>
-        <div>
-          <h4>Item Successfully Returned</h4>
-          <p>
-            Your borrowed item has been returned safely.
-            Thank you for trusting our laboratory equipment lending service.
-          </p>
-        </div>
+    <div class="card card-return">
+      <div class="card-header">
+        <h2>Return Information</h2>
       </div>
 
-    <% } else if (status === 'overdue') { %>
-
-      <div class="return-message overdue">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <div>
-          <h4>Return Overdue</h4>
-          <p>
-            The return deadline has passed.
-            Please return the borrowed item as soon as possible to avoid additional penalties.
-          </p>
+      <% if (status === 'completed') { %>
+        <div class="return-box success">
+          <div class="return-icon">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="return-content">
+            <h3>Item Successfully Returned</h3>
+            <p>
+              Your borrowed item has been returned safely.
+              Thank you for trusting our laboratory equipment lending service.
+            </p>
+          </div>
         </div>
-      </div>
-
-    <% } else if (status === 'in use') { %>
-
-      <div class="return-message active">
-        <i class="bi bi-clock-history"></i>
-        <div>
-          <h4>Borrowing in Progress</h4>
-          <p>
-            Please return the borrowed item on or before
-            <strong><%= formatTanggal(order.tgl_kembali) %></strong>.
-            Ensure the item is returned in good condition.
-          </p>
+      <% } else if (status === 'overdue') { %>
+        <div class="return-box overdue">
+          <div class="return-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+          </div>
+          <div class="return-content">
+            <h3>Return Overdue</h3>
+            <p>
+              The return deadline has passed.
+              Please return the borrowed item as soon as possible to avoid additional penalties.
+            </p>
+          </div>
         </div>
-      </div>
-
-    <% } else { %>
-
-      <div class="return-message pending">
-        <i class="bi bi-hourglass-split"></i>
-        <div>
-          <h4>Waiting for Approval</h4>
-          <p>
-            Your borrowing request is currently being reviewed.
-            Return information will be available after your request has been approved.
-          </p>
+      <% } else if (status === 'in use') { %>
+        <div class="return-box active">
+          <div class="return-icon">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div class="return-content">
+            <h3>Borrowing in Progress</h3>
+            <p>
+              Please return the borrowed item on or before
+              <strong><%= formatTanggal(order.tgl_kembali) %></strong>.
+              Ensure the item is returned in good condition.
+            </p>
+          </div>
         </div>
-      </div>
-
-    <% } %>
-
-  </div>
-</div>
+      <% } else { %>
+        <div class="return-box pending">
+          <div class="return-icon">
+            <i class="bi bi-hourglass-split"></i>
+          </div>
+          <div class="return-content">
+            <h3>Waiting for Approval</h3>
+            <p>
+              Your borrowing request is currently being reviewed.
+              Return information will be available after your request has been approved.
+            </p>
+          </div>
+        </div>
+      <% } %>
+    </div>
 
 </div>

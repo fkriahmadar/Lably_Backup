@@ -15,6 +15,18 @@ const Order = require("../models/orderModel");
 const Draft = require("../models/draftModel"); // <— pakai draft
 const Payment = require("../models/paymentModel");
 
+// Database migration for extend_from column if not exists
+db.query("ALTER TABLE d_peminjaman ADD COLUMN extend_from INT DEFAULT NULL", (err) => {
+  if (err && err.code !== 'ER_DUP_FIELDNAME') {
+    console.error("Error adding extend_from to d_peminjaman:", err);
+  }
+});
+db.query("ALTER TABLE peminjaman ADD COLUMN extend_from INT DEFAULT NULL", (err) => {
+  if (err && err.code !== 'ER_DUP_FIELDNAME') {
+    console.error("Error adding extend_from to peminjaman:", err);
+  }
+});
+
 // Controllers
 const authController = require("../controllers/authController");
 const categoryController = require("../controllers/categoryController");
@@ -394,6 +406,8 @@ router.get(
     const productId = req.query.product_id;
     const qty = parseInt(req.query.qty) || 1;
     const action = req.query.action;
+    const borrowDate = req.query.borrow_date || "";
+    const extendOrderId = req.query.extend_order_id || "";
 
     if (!productId) {
       req.session.message = "ID Produk tidak ditemukan.";
@@ -446,6 +460,8 @@ router.get(
             priceTotal,
             user,
             action,
+            borrowDate,
+            extendOrderId,
           },
           (err, content) => {
             if (err) {
@@ -471,7 +487,6 @@ router.get(
     });
   },
 );
-
 router.post("/submit-data", isLoggedIn, ensureVerifiedCustomer, (req, res) => {
   const {
     action_type,
@@ -483,7 +498,14 @@ router.post("/submit-data", isLoggedIn, ensureVerifiedCustomer, (req, res) => {
     all_total_raw,
     phone,
     address,
+    extend_order_id,
   } = req.body;
+
+  console.log("========== SUBMIT DATA ==========");
+console.log(req.body);
+console.log("action_type :", action_type);
+console.log("extend_order_id :", extend_order_id);
+console.log("=================================");
 
   const userId = req.session.user && req.session.user.id;
 
@@ -539,7 +561,11 @@ router.post("/submit-data", isLoggedIn, ensureVerifiedCustomer, (req, res) => {
         quantity: qtyNum,
         phone: phone || "",
         address: address || "",
+        extend_from: null,
       };
+
+      console.log("Draft Data:");
+      console.log(draftData);
 
       Draft.add(userId, draftData, (err2) => {
         if (err2) {
@@ -552,23 +578,27 @@ router.post("/submit-data", isLoggedIn, ensureVerifiedCustomer, (req, res) => {
         return res.redirect("/cart");
       });
     });
-  } else if (action_type === "loan") {
-    // ⬇⬇ Loan now: bersihkan draft lama, simpan 1 item, lalu ke checkout
-    Product.getById(product_id, (err, productRows) => {
-      if (err) {
-        console.error("Database Error (Product):", err);
-        req.session.message = "Gagal memproses peminjaman.";
-        return res.redirect("/catalogue");
-      }
+  } else if (action_type === "loan" || action_type === "extend") {
 
-      const product = productRows && productRows[0];
-      if (!product) {
-        req.session.message = "Produk tidak ditemukan.";
-        return res.redirect("/catalogue");
-      }
+  Product.getById(product_id, (err, productRows) => {
 
-      // Validasi: pastikan quantity tidak melebihi stock
-      const qtyNum = Number(quantity) || 1;
+    if (err) {
+      console.error("Database Error (Product):", err);
+      req.session.message = "Gagal memproses peminjaman.";
+      return res.redirect("/catalogue");
+    }
+
+    const product = productRows && productRows[0];
+
+    if (!product) {
+      req.session.message = "Produk tidak ditemukan.";
+      return res.redirect("/catalogue");
+    }
+
+    const qtyNum = Number(quantity) || 1;
+
+    // Validasi stok hanya untuk peminjaman baru
+    if (action_type !== "extend") {
       if (qtyNum <= 0 || qtyNum > Number(product.stock)) {
         req.session.message = {
           type: "error",
@@ -576,39 +606,99 @@ router.post("/submit-data", isLoggedIn, ensureVerifiedCustomer, (req, res) => {
         };
         return res.redirect(`/product/${product.id}`);
       }
+    }
 
-      const draftData = {
-        product_id: product.id,
-        price: product.price,
-        borrow_date: borrow_date || null,
-        return_date: return_date || null,
-        quantity: qtyNum,
-        phone: phone || "",
-        address: address || "",
-      };
+    const draftData = {
+      product_id: product.id,
+      price: product.price,
+      borrow_date: borrow_date || null,
+      return_date: return_date || null,
+      quantity: qtyNum,
+      phone: phone || "",
+      address: address || "",
+      extend_from: action_type === "extend"
+        ? Number(extend_order_id)
+        : null,
+    };
 
-      // hapus semua draft lama user (supaya loan now hanya item ini)
+    const saveDraft = () => {
       Draft.deleteByUser(userId, (errDel) => {
+
         if (errDel) {
           console.error("Gagal menghapus draft lama:", errDel);
         }
 
         Draft.add(userId, draftData, (err2) => {
+
           if (err2) {
-            console.error("Gagal simpan draft loan:", err2);
-            req.session.message = "Gagal menyimpan peminjaman.";
+            console.error("Gagal simpan draft:", err2);
+
+            req.session.message = {
+              type: "error",
+              text: "Gagal menyimpan peminjaman.",
+            };
+
             return res.redirect("/catalogue");
           }
 
-          console.log("Draft loan tersimpan untuk user:", userId);
+          console.log("Draft loan/extend tersimpan untuk user:", userId);
           return res.redirect("/checkout");
+
         });
+
       });
-    });
-  } else {
-    res.status(400).send("Aksi tidak valid.");
+    };
+
+    if (action_type === "extend") {
+
+      const checkSql = `
+        SELECT id
+        FROM peminjaman
+        WHERE extend_from = ?
+        AND status = 'pending'
+        LIMIT 1
+      `;
+
+      db.query(checkSql, [extend_order_id], (errCheck, rows) => {
+
+        if (errCheck) {
+          console.error(errCheck);
+
+          req.session.message = {
+            type: "error",
+            text: "Terjadi kesalahan.",
+          };
+
+          return res.redirect(`/order-detail/${extend_order_id}`);
+        }
+
+        if (rows.length > 0) {
+
+          req.session.message = {
+            type: "warning",
+            text: "Extension request is still pending.",
+          };
+
+          return res.redirect(`/order-detail/${extend_order_id}`);
+        }
+
+        saveDraft();
+
+      });
+
+    } else {
+
+      saveDraft();
+
+    }
+
+  });
+    } else {
+    return res.status(400).send("Aksi tidak valid.");
   }
 });
+
+
 
 /* ============================================
   PAGES (LOGIN REQUIRED)
@@ -844,6 +934,9 @@ router.post(
     }
 
     Draft.getByUser(userId, (err, rows) => {
+      console.log("========== DRAFT ==========");
+console.log(rows);
+console.log("===========================");
       if (err) {
         console.error("ERROR get draft for complete:", err);
         req.session.message = {
@@ -891,8 +984,12 @@ router.post(
           price: priceUnit,
           phone: r.no_telp || "",
           address: r.alamat || "",
+          extend_from: r.extend_from || null,
         };
       });
+      console.log("========== ITEMS ==========");
+console.log(itemsToInsert);
+console.log("===========================");
 
       const paymentMethod = req.body.payment_method || "Unknown";
       const ewalletProvider = req.body.ewallet_provider || null;
@@ -910,32 +1007,34 @@ router.post(
         /* =====================================================
          🔥 UPDATE STOK PRODUK SECARA REAL-TIME
       ===================================================== */
-        const updateStockPromises = itemsToInsert.map((item) => {
-          return new Promise((resolve, reject) => {
-            const sql = `
-            UPDATE products 
-            SET stock = stock - ?
-            WHERE id = ? AND stock >= ?
-          `;
-            db.query(
-              sql,
-              [item.quantity, item.product_id, item.quantity],
-              (err, result) => {
-                if (err) return reject(err);
+        const updateStockPromises = itemsToInsert
+          .filter((item) => !item.extend_from) // Lewati pengurangan stok untuk perpanjangan
+          .map((item) => {
+            return new Promise((resolve, reject) => {
+              const sql = `
+              UPDATE products 
+              SET stock = stock - ?
+              WHERE id = ? AND stock >= ?
+            `;
+              db.query(
+                sql,
+                [item.quantity, item.product_id, item.quantity],
+                (err, result) => {
+                  if (err) return reject(err);
 
-                if (result.affectedRows === 0) {
-                  return reject(
-                    new Error(
-                      "Stok tidak mencukupi untuk produk ID " + item.product_id,
-                    ),
-                  );
-                }
+                  if (result.affectedRows === 0) {
+                    return reject(
+                      new Error(
+                        "Stok tidak mencukupi untuk produk ID " + item.product_id,
+                      ),
+                    );
+                  }
 
-                resolve();
-              },
-            );
+                  resolve();
+                },
+              );
+            });
           });
-        });
 
         Promise.all(updateStockPromises)
           .then(() => {
@@ -1092,6 +1191,10 @@ router.get("/order-user", isLoggedIn, passLoginStatus, async (req, res) => {
       GROUP BY id_peminjaman
     ) r ON r.id_peminjaman = p.id
     WHERE p.id_user = ?
+AND NOT (
+    p.extend_from IS NOT NULL
+    AND p.status = 'pending'
+)
     ORDER BY p.id DESC
   `;
 
@@ -1159,7 +1262,14 @@ router.get(
     u.address,
 
     pmt.metode_payment AS payment_method,
-    pmt.ewallet_provider
+    pmt.ewallet_provider,
+
+    (
+        SELECT COUNT(*)
+        FROM peminjaman x
+        WHERE x.extend_from = p.id
+        AND x.status = 'pending'
+    ) AS pending_extend
 
 FROM peminjaman p
 
@@ -1823,40 +1933,49 @@ router.post("/order/approve/:id", isAdmin, (req, res) => {
   );
 });
 
-// REJECT → restore stock dan hapus data
+// REJECT → kembalikan stok lalu hapus data
 router.post("/order/reject/:id", isAdmin, (req, res) => {
   const id = req.params.id;
 
+  // Ambil data peminjaman dulu untuk mengetahui product & qty
   db.query(
-    "SELECT id_products, qty FROM peminjaman WHERE id = ?",
+    "SELECT id_products, qty, extend_from FROM peminjaman WHERE id = ?",
     [id],
     (err, results) => {
-      if (err) {
+      if (err || !results || results.length === 0) {
         console.error("ERROR fetching peminjaman for reject:", err);
         return res.redirect("/order");
       }
 
-      if (!results || results.length === 0) {
-        return res.redirect("/order");
+      const row = results[0];
+      const productId = row.id_products;
+      const qty = Number(row.qty) || 0;
+      const isExtension = !!row.extend_from;
+
+      function deleteOrder() {
+        // Hapus reminder terkait (jika ada), lalu hapus peminjaman
+        db.query("DELETE FROM reminder WHERE id_peminjaman = ?", [id], () => {
+          db.query("DELETE FROM peminjaman WHERE id = ?", [id], () => {
+            res.redirect("/order");
+          });
+        });
       }
 
-      const { id_products: productId, qty } = results[0];
-      const quantity = Number(qty) || 0;
-
-      db.query(
-        "UPDATE products SET stock = stock + ? WHERE id = ?",
-        [quantity, productId],
-        (err2) => {
-          if (err2) {
-            console.error("ERROR restoring stock on reject:", err2);
-          }
-          db.query(
-            "DELETE FROM peminjaman WHERE id = ?",
-            [id],
-            () => res.redirect("/order"),
-          );
-        },
-      );
+      // Kembalikan stok hanya jika bukan perpanjangan (extend)
+      if (!isExtension && qty > 0) {
+        db.query(
+          "UPDATE products SET stock = stock + ? WHERE id = ?",
+          [qty, productId],
+          (err2) => {
+            if (err2) {
+              console.error("ERROR restoring stock on reject:", err2);
+            }
+            deleteOrder();
+          },
+        );
+      } else {
+        deleteOrder();
+      }
     },
   );
 });

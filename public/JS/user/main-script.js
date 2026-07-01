@@ -295,6 +295,30 @@ document.addEventListener("DOMContentLoaded", function () {
     const price = Number(document.getElementById("price").dataset.price);
     const qty = Number(document.getElementById("qty").value);
 
+    // Format tanggal ke YYYY-MM-DD
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    // Set tanggal minimal pinjam (Today) jika bukan perpanjangan
+    if (!borrowDate.hasAttribute("readonly")) {
+      const today = new Date();
+      borrowDate.min = formatDate(today);
+    }
+
+    // Update minimal tanggal kembali (H+1 dari tanggal pinjam)
+    function updateReturnDateMin() {
+      if (borrowDate.value) {
+        const bDate = new Date(borrowDate.value);
+        const nextDay = new Date(bDate);
+        nextDay.setDate(bDate.getDate() + 1);
+        returnDate.min = formatDate(nextDay);
+      }
+    }
+
     function hitungTotal() {
       if (!borrowDate.value || !returnDate.value) return;
 
@@ -314,7 +338,14 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("allTotalRaw").value = total;
     }
 
-    borrowDate.addEventListener("change", hitungTotal);
+    borrowDate.addEventListener("change", () => {
+      updateReturnDateMin();
+      hitungTotal();
+    });
     returnDate.addEventListener("change", hitungTotal);
+
+    // Inisialisasi awal
+    updateReturnDateMin();
+    hitungTotal();
   }
 });

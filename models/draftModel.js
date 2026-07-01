@@ -5,8 +5,8 @@ const Draft = {
     add: (userId, data, callback) => {
         const sql = `
             INSERT INTO d_peminjaman
-              (id_user, id_products, price, tgl_pinjam, tgl_kembali, qty, no_telp, alamat)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+              (id_user, id_products, price, tgl_pinjam, tgl_kembali, qty, no_telp, alamat, extend_from)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const params = [
@@ -18,6 +18,7 @@ const Draft = {
             data.quantity || 1,
             data.phone || "",
             data.address || "",
+            data.extend_from || null,
         ];
 
         database.query(sql, params, callback);
